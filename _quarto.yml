@@ -4,15 +4,13 @@ project:
 
 website:
   sidebar:
-    style: "docked"
-    search: true
     contents:
       - section: "Basic Analysis"
         contents:
-          - index.qmd
+          - href: index.qmd
       - section: "More Stuff"
         contents:
-          - section1.qmd
+          - href: section1.qmd
 
 format:
   html:
