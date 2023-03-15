@@ -1,1 +1,0 @@
-# jmhumphreys.github.io
