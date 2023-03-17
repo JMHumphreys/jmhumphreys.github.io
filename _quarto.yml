@@ -6,8 +6,8 @@ website:
   page-navigation: true
   title: "John Humphreys"
   page-footer:
-    left: "&copy; Copyright 2022, Author"
-    right: "This page is built with ❤️ and [Quarto](https://quarto.org/)."
+    left: "&copy; Copyright 2022, John Humphreys"
+    right: "Under Construction"
   navbar:
     left:
       - href: index.qmd
