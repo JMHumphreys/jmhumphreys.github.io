@@ -3,14 +3,29 @@ project:
   output-dir: docs
 
 website:
-  sidebar:
-    contents:
-      - section: "Basic Analysis"
-        contents:
-          - href: index.qmd
-      - section: "More Stuff"
-        contents:
-          - href: section1.qmd
+  page-navigation: true
+  title: "John Humphreys"
+  page-footer:
+    left: "&copy; Copyright 2022, Author"
+    right: "This page is built with ❤️ and [Quarto](https://quarto.org/)."
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: projects/index.qmd
+        text: Projects
+      - href: section1.qmd
+        text: About
+        
+#website:
+#  sidebar:
+#    contents:
+#      - section: "Basic Analysis"
+ #       contents:
+ #         - href: index.qmd
+ #     - section: "More Stuff"
+ #       contents:
+#          - href: section1.qmd
 
 format:
   html:
