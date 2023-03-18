@@ -19,5 +19,12 @@
     "title": "More Stuff 1",
     "section": "",
     "text": "MyFrame = as.data.frame(\n                  cbind(H = seq(0,1000,1),\n                        V = rnorm(length(seq(0,1000,1))))\n)\n\n\nlibrary(ggplot2)\n\nggplot(MyFrame, aes(H,V)) +\n  geom_point()"
+  },
+  {
+    "objectID": "section2.html",
+    "href": "section2.html",
+    "title": "Part 2",
+    "section": "",
+    "text": "MyFrame = as.data.frame(\n                  cbind(H = seq(0,1000,1),\n                        V = rnorm(length(seq(0,1000,1))))\n)\n\n\nlibrary(ggplot2)\n\nggplot(MyFrame, aes(H,V)) +\n  geom_point(col=\"red\")"
   }
 ]

@@ -1,0 +1,18 @@
+---
+title: "Part 2"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+MyFrame = as.data.frame(
+                  cbind(H = seq(0,1000,1),
+                        V = rnorm(length(seq(0,1000,1))))
+)
+
+
+library(ggplot2)
+
+ggplot(MyFrame, aes(H,V)) +
+  geom_point(col="red")
+```

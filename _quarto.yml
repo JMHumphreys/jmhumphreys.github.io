@@ -12,9 +12,9 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: index.qmd
-        text: Projects
       - href: section1.qmd
+        text: Projects
+      - href: section2.qmd
         text: About
         
 #website:
