@@ -1,21 +1,29 @@
 ---
-title: "Home"
+image: images/biogeo.png
+about:
+  template: trestles
 format:
   html:
     code-fold: show
     code-summary: "Hide code"
     code-overflow: wrap
-    toc-title: Page Contents
-    toc: true
-    toc-depth: 2
     number-sections: false
     html-math-method: katex
     css: styles.css
     theme: flatly
     toc-location: left
     smooth-scroll: true
+comments: false
+title-block-banner: true
+
 editor_options: 
   chunk_output_type: console
 ---
+
+<div>
+
 # Hello
-Learning Quarto - work in progress!
+Learning Quarto - work in progress! More words here...
+
+<div>
+

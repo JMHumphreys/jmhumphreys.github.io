@@ -1,6 +1,6 @@
 ---
 title: "About"
-image: chihuahuan.jpg
+image: images/chihuahuan.jpg
 about:
   template: marquee
 format:

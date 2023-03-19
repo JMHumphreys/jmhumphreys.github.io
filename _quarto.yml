@@ -9,11 +9,13 @@ website:
   page-navigation: true
   title: "Spatial Lab"
   open-graph: true
+  favicon: images/favicon.png
   navbar:
+    title: false
     right:
       - href: index.qmd
         text: Home
-      - href: section1.qmd
+      - href: project/index.qmd
         text: Research
       - href: about.qmd
         text: About
@@ -47,7 +49,9 @@ website:
         
 format:
   html:
-    theme: flatly
+    theme:
+      light: flatly
+      dark: darkly
     css: scss/styles.css
     link-external-icon: true
     link-external-newwindow: true
