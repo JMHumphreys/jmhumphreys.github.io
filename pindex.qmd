@@ -2,7 +2,6 @@
 title: "Projects"
 subtitle: "Past and current research projects"
 listing:
-  id: listing
   contents: projects
   fields: [image, date, title, reading-time, description, file-modified]
   field-display-names:
