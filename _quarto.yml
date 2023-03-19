@@ -43,7 +43,7 @@ website:
   page-footer:
     border: false
     left: "Published with [Quarto](https://quarto.org/) v1.2.335"
-    right: "© 2023 [John Humphreys](/about) | [MIT License](https://github.com/JMHumphreys/jmhumphreys.github.io/license)"
+    right: "© 2023 [John Humphreys](/about) | [MIT License](/license)"
         
 #website:
 #  sidebar:
