@@ -11,11 +11,28 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Home
+        text: home
+      - text: contact me
+        menu:
+          - icon: github
+            href: https://github.com/JMHumphreys
+            text: "jmhumphreys"
+          - icon: octagon
+            href: https://osf.io/zwbhm/
+            text: "John M Humphreys"
+          - icon: google
+            href: https://scholar.google.com/citations?hl=en&user=rLUtjhgAAAAJ
+            text: "John M Humphreys"
+          - icon: lightbulb
+            href: https://orcid.org/0000-0002-8464-0886
+            text: "ORCID"
+          - icon: envelope
+            href: mailto:jmh09r@my.fsu.edu
+            text: "jmh09r@my.fsu.edu"
       - href: section1.qmd
-        text: Projects
+        text: projects
       - href: section2.qmd
-        text: About
+        text: about
         
 #website:
 #  sidebar:
