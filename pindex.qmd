@@ -3,7 +3,7 @@ title: "Projects"
 subtitle: "Past and current research projects"
 listing:
   id: listing
-  contents: .
+  contents: projects
   fields: [image, date, title, reading-time, description, file-modified]
   field-display-names:
     file-modified: "Updated"
@@ -24,5 +24,4 @@ author: ""
 date-modified: ""
 ---
 
-::: {#listing}
-:::
+# [Projects]{.third-color}
