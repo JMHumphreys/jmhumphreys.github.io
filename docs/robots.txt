@@ -1,1 +1,1 @@
-Sitemap: https://github.com/JMHumphreys/jmhumphreys.github.io/sitemap.xml
+Sitemap: https://jmhumphreys.github.io/sitemap.xml
