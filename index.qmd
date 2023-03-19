@@ -1,11 +1,7 @@
 ---
-title: "git_web"
+title: "home"
+editor_options: 
+  chunk_output_type: console
 ---
-
-This is a Quarto website.
-
-To learn more about Quarto websites visit.
-
-```{r}
-1 + 12/4
-```
+# Hello
+Learning Quarto - work in progress!

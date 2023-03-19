@@ -1,5 +1,5 @@
 ---
-title: "More Stuff 1"
+title: "section 1"
 editor_options: 
   chunk_output_type: console
 ---
