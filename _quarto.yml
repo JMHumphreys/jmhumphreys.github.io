@@ -13,6 +13,10 @@ website:
     right:
       - href: index.qmd
         text: Home
+      - href: section1.qmd
+        text: Research
+      - href: about.qmd
+        text: About
       - text: Connect
         menu:
           - icon: github
@@ -30,10 +34,6 @@ website:
           - icon: envelope
             href: mailto:jmh09r@my.fsu.edu
             text: "jmh09r@my.fsu.edu"
-      - href: section1.qmd
-        text: Research
-      - href: about.qmd
-        text: About
       - icon: github
         menu:
           - text: Source Code
