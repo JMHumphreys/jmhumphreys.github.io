@@ -3,6 +3,22 @@ title: "Attempt to create a SECOND Project Page"
 date: "2023-03-19"
 categories: [R, statistical inference, animal movement]
 description: "An entirely different fake project"
+format:
+  html:
+    code-fold: show
+    code-summary: "Hide code"
+    code-overflow: wrap
+    toc-title: Page Contents
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    html-math-method: katex
+    css: styles.css
+    theme: flatly
+    toc-location: left
+    smooth-scroll: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 ![](feature.jpg){fig-alt="marten taking the bait"}
@@ -14,4 +30,13 @@ Attempt at a second page.
 ```{r}
 
 plot(density(rnorm(10000)))
+```
+
+
+# Another Darned Chunk
+
+### Not Pie
+A second chunk of code.
+```{r}
+22/7
 ```

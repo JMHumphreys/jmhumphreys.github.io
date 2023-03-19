@@ -1,7 +1,7 @@
 {
-  "hash": "ce2c54ea21d50bdc12ce1b44f8d820b0",
+  "hash": "084ac9ca8a4162abc30d5810cac39b36",
   "result": {
-    "markdown": "---\ntitle: \"Attempt to create a Project Page\"\ndate: \"2023-03-19\"\ncategories: [R, statistical inference]\ndescription: \"Just a webpage test\"\n---\n\n\n![](feature.jpg){fig-alt=\"random picture of a lubber\"}\n\nNot sure if this is working...\n\n# Some Chunk\n\n\n::: {.cell}\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2.434783\n```\n:::\n:::\n",
+    "markdown": "---\ntitle: \"Attempt to create a Project Page\"\ndate: \"2023-03-19\"\ncategories: [R, statistical inference]\ndescription: \"Just a webpage test\"\nformat:\n  html:\n    code-fold: show\n    code-summary: \"Hide code\"\n    code-overflow: wrap\n    toc-title: Page Contents\n    toc: true\n    toc-depth: 2\n    number-sections: false\n    html-math-method: katex\n    css: styles.css\n    theme: flatly\n    toc-location: left\n    smooth-scroll: true\neditor_options: \n  chunk_output_type: console\n---\n\n\n![](feature.jpg){fig-alt=\"random picture of a lubber\"}\n\nNot sure if this is working...\n\n# Some Chunk\n\n\n::: {.cell}\n\n```{.r .cell-code}\n56/23\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2.434783\n```\n:::\n:::\n",
     "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"

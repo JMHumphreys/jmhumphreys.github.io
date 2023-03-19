@@ -15,11 +15,6 @@ twitter-card:
     image-height: 314
     card-style: summary_large_image
 
-
-toc: true    
-toc-title: Contents
-
 execute:
-  echo: false
   message: true
   warning: true
