@@ -66,8 +66,10 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="scss/styles.css">
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="">
-<meta property="og:image" content="images/biogeo.png">
+<meta property="og:image" content="https://github.com/JMHumphreys/jmhumphreys.github.io/images\biogeo.png">
 <meta property="og:site-name" content="Spatial Lab">
+<meta property="og:image:height" content="1078">
+<meta property="og:image:width" content="1101">
 </head>
 
 <body class="floating nav-fixed fullcontent">
@@ -86,7 +88,7 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./project/index.qmd">
+    <a class="nav-link" href="./pindex.html">
  <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
@@ -417,7 +419,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp(/https:\/\/github\.com\/JMHumphreys\/jmhumphreys\.github\.io/);
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href);
     }

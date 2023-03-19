@@ -1,7 +1,7 @@
 {
-  "hash": "c85dfc2d61291dc5aa39211f0b978fbe",
+  "hash": "ce2c54ea21d50bdc12ce1b44f8d820b0",
   "result": {
-    "markdown": "---\ntitle: \"Attempt to create a Project Page\"\ndate: \"2023-03-19\"\ncategories: [R, statistical inference]\ndescription: \"Just a webpage test\"\n---\n\n\n![](feature.jpg){fig-alt=\"random picture of a lubber\"}\n\nNot sure if this is working...\n\n# Some Chunk\n\n::: {.cell}\n\n```{.r .cell-code}\n56/23\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2.434783\n```\n:::\n:::\n",
+    "markdown": "---\ntitle: \"Attempt to create a Project Page\"\ndate: \"2023-03-19\"\ncategories: [R, statistical inference]\ndescription: \"Just a webpage test\"\n---\n\n\n![](feature.jpg){fig-alt=\"random picture of a lubber\"}\n\nNot sure if this is working...\n\n# Some Chunk\n\n\n::: {.cell}\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2.434783\n```\n:::\n:::\n",
     "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"

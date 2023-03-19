@@ -8,6 +8,7 @@ execute:
 website:
   page-navigation: true
   title: "Spatial Lab"
+  site-url: https://github.com/JMHumphreys/jmhumphreys.github.io
   open-graph: true
   favicon: images/favicon.png
   navbar:

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Spatial Lab</title>
+<link>https://github.com/JMHumphreys/jmhumphreys.github.io/pindex.html#category=R</link>
+<atom:link href="https://github.com/JMHumphreys/jmhumphreys.github.io/pindex-r.xml" rel="self" type="application/rss+xml"/>
+<description></description>
+<generator>quarto-1.2.335</generator>
+<lastBuildDate>Sun, 19 Mar 2023 06:00:00 GMT</lastBuildDate>
+<item>
+  <title>Attempt to create a Project Page</title>
+  <link>https://github.com/JMHumphreys/jmhumphreys.github.io/projects/attempt1/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><img src="https://github.com/JMHumphreys/jmhumphreys.github.io/projects/attempt1/feature.jpg" class="img-fluid" alt="random picture of a lubber"></p>
+<p>Not sure if this is working…</p>
+<section id="some-chunk" class="level1">
+<h1>Some Chunk</h1>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.434783</code></pre>
+</div>
+</div>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{2023,
+  author = {},
+  title = {Attempt to Create a {Project} {Page}},
+  date = {2023-03-19},
+  url = {https://github.com/JMHumphreys/jmhumphreys.github.io/projects/attempt1},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-2023" class="csl-entry quarto-appendix-citeas">
+<span>“Attempt to Create a Project Page.”</span> 2023. March 19, 2023.
+<a href="https://github.com/JMHumphreys/jmhumphreys.github.io/projects/attempt1">https://github.com/JMHumphreys/jmhumphreys.github.io/projects/attempt1</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>statistical inference</category>
+  <guid>https://github.com/JMHumphreys/jmhumphreys.github.io/projects/attempt1/index.html</guid>
+  <pubDate>Sun, 19 Mar 2023 06:00:00 GMT</pubDate>
+  <media:content url="https://github.com/JMHumphreys/jmhumphreys.github.io/projects/attempt1/feature.jpg" medium="image" type="image/jpeg"/>
+</item>
+</channel>
+</rss>

@@ -150,7 +150,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./project/index.qmd">
+    <a class="nav-link" href="./pindex.html">
  <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
@@ -563,7 +563,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp(/https:\/\/github\.com\/JMHumphreys\/jmhumphreys\.github\.io/);
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href);
     }
