@@ -1,0 +1,16 @@
+{
+  "hash": "4ffc990ec42ea6cdf84332879ed05ef2",
+  "result": {
+    "markdown": "---\ntitle: \"section 1\"\nformat:\n  html:\n    code-fold: show\n    code-summary: \"Hide code\"\n    code-overflow: wrap\n    toc-title: Page Contents\n    toc: true\n    toc-depth: 2\n    number-sections: false\n    html-math-method: katex\n    css: styles.css\n    theme: flatly\n    toc-location: left\n    smooth-scroll: true\neditor_options: \n  chunk_output_type: console\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nMyFrame = as.data.frame(\n                  cbind(H = seq(0,1000,1),\n                        V = rnorm(length(seq(0,1000,1))))\n)\n\n\nlibrary(ggplot2)\n\nggplot(MyFrame, aes(H,V)) +\n  geom_point()\n```\n\n::: {.cell-output-display}\n![](section1_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "section1_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
