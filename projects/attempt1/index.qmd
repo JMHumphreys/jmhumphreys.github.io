@@ -1,0 +1,16 @@
+---
+title: "Attempt to create a Project Page"
+date: "2023-03-19"
+categories: [R, statistical inference]
+description: "Just a webpage test"
+---
+
+![](feature.jpg){fig-alt="random picture of a lubber"}
+
+Not sure if this is working...
+
+# Some Chunk
+```{r}
+
+56/23
+```
