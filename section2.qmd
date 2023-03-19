@@ -1,5 +1,5 @@
 ---
-title: "section 2"
+title: "About"
 format:
   html:
     code-fold: show

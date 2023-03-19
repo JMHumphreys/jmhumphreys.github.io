@@ -32,7 +32,7 @@ website:
             text: "jmh09r@my.fsu.edu"
       - href: section1.qmd
         text: Research
-      - href: section2.qmd
+      - href: about.qmd
         text: About
       - icon: github
         menu:
@@ -43,7 +43,7 @@ website:
   page-footer:
     border: false
     left: "Published with [Quarto](https://quarto.org/) v1.2.335"
-    right: "© 2023 [John Humphreys](/about) | [MIT License](/section2)"
+    right: "© 2023 [John Humphreys](/about) | [MIT License](/license)"
         
 #website:
 #  sidebar:

@@ -2,42 +2,42 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "home",
+    "title": "Home",
     "section": "",
     "text": "Hello\nLearning Quarto - work in progress!"
   },
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "about",
+    "title": "About",
     "section": "",
     "text": "About\nAbout this site\n\n\nHide code\n1 + 1\n\n\n[1] 2"
   },
   {
     "objectID": "section1.html",
     "href": "section1.html",
-    "title": "section 1",
+    "title": "Research",
     "section": "",
     "text": "Hide code\nMyFrame = as.data.frame(\n                  cbind(H = seq(0,1000,1),\n                        V = rnorm(length(seq(0,1000,1))))\n)\n\n\nlibrary(ggplot2)\n\nggplot(MyFrame, aes(H,V)) +\n  geom_point()"
   },
   {
     "objectID": "section2.html",
     "href": "section2.html",
-    "title": "section 2",
+    "title": "About",
     "section": "",
     "text": "Test text\n\n\nHide code\nMyFrame = as.data.frame(\n                  cbind(H = seq(0,1000,1),\n                        V = rnorm(length(seq(0,1000,1))))\n)\n\n\nlibrary(ggplot2)\n\nggplot(MyFrame, aes(H,V)) +\n  geom_point(col=\"red\")"
   },
   {
     "objectID": "section2.html#code",
     "href": "section2.html#code",
-    "title": "section 2",
+    "title": "About",
     "section": "Code",
     "text": "Code\n\n\nHide code\n2+3\n\n\n[1] 5"
   },
   {
     "objectID": "section2.html#more-code",
     "href": "section2.html#more-code",
-    "title": "section 2",
+    "title": "About",
     "section": "More Code",
     "text": "More Code\n\n\nHide code\n2+3+3/2\n\n\n[1] 6.5"
   },

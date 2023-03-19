@@ -1,5 +1,5 @@
 ---
-title: "home"
+title: "Home"
 format:
   html:
     code-fold: show
