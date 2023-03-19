@@ -1,0 +1,16 @@
+{
+  "hash": "fe2f18841df41d818d91bb0c6053efd8",
+  "result": {
+    "markdown": "---\ntitle: \"Attempt to create a SECOND Project Page\"\ndate: \"2023-03-19\"\ncategories: [R, statistical inference, animal movement]\ndescription: \"An entirely different fake project\"\n---\n\n\n![](feature.jpg){fig-alt=\"marten taking the bait\"}\n\nAttempt at a second page.\n\n# Some Chunk\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -1,0 +1,17 @@
+---
+title: "Attempt to create a SECOND Project Page"
+date: "2023-03-19"
+categories: [R, statistical inference, animal movement]
+description: "An entirely different fake project"
+---
+
+![](feature.jpg){fig-alt="marten taking the bait"}
+
+Attempt at a second page.
+
+# Some Chunk
+
+```{r}
+
+plot(density(rnorm(10000)))
+```

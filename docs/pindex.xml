@@ -49,5 +49,44 @@
   <pubDate>Sun, 19 Mar 2023 06:00:00 GMT</pubDate>
   <media:content url="https://jmhumphreys.github.io/projects/attempt1/feature.jpg" medium="image" type="image/jpeg"/>
 </item>
+<item>
+  <title>Attempt to create a SECOND Project Page</title>
+  <link>https://jmhumphreys.github.io/projects/attempt2/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><img src="https://jmhumphreys.github.io/projects/attempt2/feature.jpg" class="img-fluid" alt="marten taking the bait"></p>
+<p>Attempt at a second page.</p>
+<section id="some-chunk" class="level1">
+<h1>Some Chunk</h1>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/projects/attempt2/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{2023,
+  author = {},
+  title = {Attempt to Create a {SECOND} {Project} {Page}},
+  date = {2023-03-19},
+  url = {https://jmhumphreys.github.io//projects/attempt2},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-2023" class="csl-entry quarto-appendix-citeas">
+<span>“Attempt to Create a SECOND Project Page.”</span> 2023. March 19,
+2023. <a href="https://jmhumphreys.github.io//projects/attempt2">https://jmhumphreys.github.io//projects/attempt2</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>statistical inference</category>
+  <category>animal movement</category>
+  <guid>https://jmhumphreys.github.io/projects/attempt2/index.html</guid>
+  <pubDate>Sun, 19 Mar 2023 06:00:00 GMT</pubDate>
+  <media:content url="https://jmhumphreys.github.io/projects/attempt2/feature.jpg" medium="image" type="image/jpeg"/>
+</item>
 </channel>
 </rss>
