@@ -17,7 +17,7 @@ website:
           - icon: github
             href: https://github.com/JMHumphreys
             text: "jmhumphreys"
-          - icon: octagon
+          - favicon: osf.svg
             href: https://osf.io/zwbhm/
             text: "John M Humphreys"
           - icon: google

@@ -1,0 +1,73 @@
+{
+  "contributors": [
+    {
+      "contributorName": "Open Science Framework",
+      "contributorType": "HostingInstitution",
+      "name": "Open Science Framework",
+      "nameIdentifiers": [
+        {
+          "name": "Open Science Framework",
+          "nameIdentifier": "https://ror.org/05d5mza29",
+          "nameIdentifierScheme": "ROR"
+        },
+        {
+          "name": "Open Science Framework",
+          "nameIdentifier": "https://grid.ac/institutes/grid.466501.0/",
+          "nameIdentifierScheme": "GRID"
+        }
+      ],
+      "nameType": "Organizational"
+    }
+  ],
+  "creators": [
+    {
+      "affiliation": [],
+      "name": "",
+      "nameIdentifiers": [],
+      "nameType": "Personal"
+    }
+  ],
+  "dates": [
+    {
+      "date": "2017-03-28",
+      "dateType": "Created"
+    },
+    {
+      "date": "1970-01-01",
+      "dateType": "Updated"
+    }
+  ],
+  "descriptions": [],
+  "fundingReferences": [],
+  "identifiers": [
+    {
+      "identifier": "",
+      "identifierType": "DOI"
+    },
+    {
+      "identifier": "https://osf.io/a6zvd",
+      "identifierType": "URL"
+    }
+  ],
+  "publicationYear": "2017",
+  "publisher": "Open Science Framework",
+  "relatedIdentifiers": [
+    {
+      "relatedIdentifier": "https://osf.io/7cewn",
+      "relatedIdentifierType": "URL",
+      "relationType": "IsPartOf"
+    }
+  ],
+  "rightsList": [],
+  "schemaVersion": "http://datacite.org/schema/kernel-4",
+  "subjects": [],
+  "titles": [
+    {
+      "title": "open_science_framework_white_trans.png"
+    }
+  ],
+  "types": {
+    "resourceType": "File",
+    "resourceTypeGeneral": "Text"
+  }
+}

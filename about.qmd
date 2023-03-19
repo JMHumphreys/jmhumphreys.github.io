@@ -1,5 +1,8 @@
 ---
 title: "about"
+image: chihuahuan.jpg
+about:
+  template: marquee
 format:
   html:
     code-fold: show
