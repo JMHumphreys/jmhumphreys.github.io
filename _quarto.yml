@@ -58,8 +58,24 @@ website:
 format:
   html:
     theme: flatly
-    css: styles.css
-    toc: true
+      light: [flatly, scss/light.scss]
+      dark: [darkly, scss/dark.scss]
+      css: scss/styles.css
+      code-link: true
+      link-external-icon: true
+      link-external-newwindow: true
+      smooth-scroll: true
+      highlight-style: gruvbox
+      df-print: kable
+      comments:
+        giscus:
+          repo: JMHumphreys/jmhumphreys.github.io
+          category: "Comments"
+          mapping: "pathname"
+          reactions-enabled: true
+          loading: lazy
+          input-position: "bottom"
+          theme: "transparent_dark"
 
 editor: visual
 
