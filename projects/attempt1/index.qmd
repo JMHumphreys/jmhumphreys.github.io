@@ -23,7 +23,7 @@ editor_options:
 
 ![](feature.jpg){fig-alt="random picture of a lubber"}
 
-Not sure if this is working...
+Hypothetical project code here:
 
 # Some Chunk
 
