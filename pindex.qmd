@@ -25,4 +25,4 @@ date-modified: ""
 
 # [Projects]{.third-color}
 
-### Projects listed here are more developed and complete than those found in [Snippits](/sindex).
+### Projects here are more developed and complete than those found in [Snippits](/sindex).

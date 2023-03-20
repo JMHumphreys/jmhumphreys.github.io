@@ -24,4 +24,4 @@ date-modified: ""
 ---
 
 # [Snippits]{.third-color}
-### Snippits listed here are one-off analyses and less developed code examples than those in [Projects](/pindex). 
+### One-off analyses and less developed code than found in [Projects](/pindex). 
