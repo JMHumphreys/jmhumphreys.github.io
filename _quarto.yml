@@ -18,6 +18,8 @@ website:
         text: Home
       - href: pindex.qmd
         text: Research
+      - href: psindex.qmd
+        text: Snippits
       - href: about.qmd
         text: About
       - text: Connect

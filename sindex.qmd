@@ -1,9 +1,9 @@
 ---
-title: "Past, current, and aspirant projects"
+title: "Abbrevaitaed workflows and small code blocks"
 #subtitle: "Past, current, and aspiring projects"
 listing:
-  contents: projects
-  fields: [image, date, title, reading-time, description, file-modified]
+  contents: snippits
+  fields: [date, title, reading-time, description, file-modified]
   field-display-names:
     file-modified: "Updated"
   sort: "date desc"
@@ -23,6 +23,5 @@ author: ""
 date-modified: ""
 ---
 
-# [Projects]{.third-color}
-
-### Projects listed here are more developed and complete than those found in [Snippits](/sindex).
+# [Snippits]{.third-color}
+### Snippits listed here are one-off analyses and less developed code examples than those in [Projects](/pindex). 

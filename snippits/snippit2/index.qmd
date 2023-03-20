@@ -1,0 +1,55 @@
+---
+title: "snippit 2"
+description: Seconf code placeholder
+date: 2023-03-19
+categories: [inla, geostatistics]
+format:
+  html:
+    code-fold: show
+    code-summary: "Hide code"
+    code-overflow: wrap
+    toc-title: Page Contents
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    html-math-method: katex
+    css: styles.css
+    theme: flatly
+    toc-location: left
+    smooth-scroll: true
+editor_options: 
+  chunk_output_type: console
+---
+
+# Intro
+
+Very important words.  
+
+# Step one
+
+Better detailing improtant thoughts than was done above. 
+
+## Code chunk
+```{r}
+100/3
+```
+
+
+# Step two
+
+Work in progress
+
+## Code chunk again
+```{r}
+MyFrame = as.data.frame(
+                  cbind(H = seq(0,1000,1),
+                        V = rnorm(length(seq(0,1000,1))))
+)
+
+
+library(ggplot2)
+
+ggplot(MyFrame, aes(H,V)) +
+  geom_point(col="red")
+```
+```

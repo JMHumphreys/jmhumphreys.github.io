@@ -1,0 +1,16 @@
+{
+  "hash": "bf705bee05ca1dc2f222c0a0ad11519a",
+  "result": {
+    "markdown": "---\ntitle: \"snippit 2\"\ndescription: Seconf code placeholder\ndate: 2023-03-19\ncategories: [inla, geostatistics]\nformat:\n  html:\n    code-fold: show\n    code-summary: \"Hide code\"\n    code-overflow: wrap\n    toc-title: Page Contents\n    toc: true\n    toc-depth: 2\n    number-sections: false\n    html-math-method: katex\n    css: styles.css\n    theme: flatly\n    toc-location: left\n    smooth-scroll: true\neditor_options: \n  chunk_output_type: console\n---\n\n\n# Intro\n\nVery important words.  \n\n# Step one\n\nBetter detailing improtant thoughts than was done above. \n\n## Code chunk\n\n::: {.cell}\n\n```{.r .cell-code}\n100/3\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 33.33333\n```\n:::\n:::\n\n\n\n# Step two\n\nWork in progress\n\n## Code chunk again\n\n::: {.cell}\n\n```{.r .cell-code}\nMyFrame = as.data.frame(\n                  cbind(H = seq(0,1000,1),\n                        V = rnorm(length(seq(0,1000,1))))\n)\n\n\nlibrary(ggplot2)\n\nggplot(MyFrame, aes(H,V)) +\n  geom_point(col=\"red\")\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-2-1.png){width=672}\n:::\n:::\n\n```\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

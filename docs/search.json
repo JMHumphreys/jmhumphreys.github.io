@@ -65,9 +65,9 @@
   {
     "objectID": "pindex.html",
     "href": "pindex.html",
-    "title": "Projects",
+    "title": "Past, current, and aspirant projects",
     "section": "",
-    "text": "Projects\n\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Updated - Oldest\n        \n         \n          Updated - Newest\n        \n     \n  \n\n\n\n\n\n\n\n\n\n\nAttempt to create a Project Page\n\n\n0 min\n\n\nJust a webpage test\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 19, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\nAttempt to create a SECOND Project Page\n\n\n0 min\n\n\nAn entirely different fake project\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 19, 2023\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Projects\n\nProjects listed here are more developed and complete than those found in Snippits.\n\n\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Updated - Oldest\n        \n         \n          Updated - Newest\n        \n     \n  \n\n\n\n\n\n\n\n\n\n\nAttempt to create a Project Page\n\n\n0 min\n\n\nJust a webpage test\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 19, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\nAttempt to create a SECOND Project Page\n\n\n0 min\n\n\nAn entirely different fake project\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 19, 2023\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "projects/attempt2/index.html",
@@ -82,5 +82,54 @@
     "title": "Attempt to create a SECOND Project Page",
     "section": "Not Pie",
     "text": "Not Pie\nA second chunk of code.\n\n\nHide code\n22/7\n\n\n[1] 3.142857"
+  },
+  {
+    "objectID": "snippits/snippit1/index.html",
+    "href": "snippits/snippit1/index.html",
+    "title": "snippit 1",
+    "section": "",
+    "text": "Long story short."
+  },
+  {
+    "objectID": "snippits/snippit1/index.html#code-chunk",
+    "href": "snippits/snippit1/index.html#code-chunk",
+    "title": "snippit 1",
+    "section": "Code chunk",
+    "text": "Code chunk\n\n\nHide code\n76*25*0.24\n\n\n[1] 456"
+  },
+  {
+    "objectID": "snippits/snippit1/index.html#code-chunk-again",
+    "href": "snippits/snippit1/index.html#code-chunk-again",
+    "title": "snippit 1",
+    "section": "Code chunk again",
+    "text": "Code chunk again\n\n\nHide code\npi*7\n\n\n[1] 21.99115"
+  },
+  {
+    "objectID": "sindex.html",
+    "href": "sindex.html",
+    "title": "Abbrevaitaed workflows and small code blocks",
+    "section": "",
+    "text": "Snippits\n\nSnippits listed here are one-off analyses and less developed code examples than those in Projects.\n\n\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Updated - Oldest\n        \n         \n          Updated - Newest\n        \n     \n  \n\n\n\n\n\n\n\nsnippit 1\n\n\n0 min\n\n\nJust a placeholder as I’m figuring things out\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 19, 2023\n\n\n\n\n\n\n\n\n\n\nsnippit 2\n\n\n0 min\n\n\nSeconf code placeholder\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 19, 2023\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "snippits/snippit2/index.html",
+    "href": "snippits/snippit2/index.html",
+    "title": "snippit 2",
+    "section": "",
+    "text": "Very important words."
+  },
+  {
+    "objectID": "snippits/snippit2/index.html#code-chunk",
+    "href": "snippits/snippit2/index.html#code-chunk",
+    "title": "snippit 2",
+    "section": "Code chunk",
+    "text": "Code chunk\n\n\nHide code\n100/3\n\n\n[1] 33.33333"
+  },
+  {
+    "objectID": "snippits/snippit2/index.html#code-chunk-again",
+    "href": "snippits/snippit2/index.html#code-chunk-again",
+    "title": "snippit 2",
+    "section": "Code chunk again",
+    "text": "Code chunk again\n\n\nHide code\nMyFrame = as.data.frame(\n                  cbind(H = seq(0,1000,1),\n                        V = rnorm(length(seq(0,1000,1))))\n)\n\n\nlibrary(ggplot2)\n\nggplot(MyFrame, aes(H,V)) +\n  geom_point(col=\"red\")\n\n\n\n\n\n```"
   }
 ]

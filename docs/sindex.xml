@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Spatial Lab</title>
+<link>https://jmhumphreys.github.io/sindex.html</link>
+<atom:link href="https://jmhumphreys.github.io/sindex.xml" rel="self" type="application/rss+xml"/>
+<description></description>
+<generator>quarto-1.2.335</generator>
+<lastBuildDate>Sun, 19 Mar 2023 06:00:00 GMT</lastBuildDate>
+<item>
+  <title>snippit 1</title>
+  <link>https://jmhumphreys.github.io/snippits/snippit1/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<section id="intro" class="level1">
+<h1>Intro</h1>
+<p>Long story short.</p>
+</section>
+<section id="step-one" class="level1">
+<h1>Step one</h1>
+<p>Here’s my explanation.</p>
+<section id="code-chunk" class="level2">
+<h2 class="anchored" data-anchor-id="code-chunk">Code chunk</h2>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="dv" style="color: #AD0000;">76</span><span class="sc" style="color: #5E5E5E;">*</span><span class="dv" style="color: #AD0000;">25</span><span class="sc" style="color: #5E5E5E;">*</span><span class="fl" style="color: #AD0000;">0.24</span></span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 456</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="step-two" class="level1">
+<h1>Step two</h1>
+<p>Here’s my explanation of the next step.</p>
+<section id="code-chunk-again" class="level2">
+<h2 class="anchored" data-anchor-id="code-chunk-again">Code chunk again</h2>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">pi<span class="sc" style="color: #5E5E5E;">*</span><span class="dv" style="color: #AD0000;">7</span></span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 21.99115</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>stan</category>
+  <category>jags</category>
+  <guid>https://jmhumphreys.github.io/snippits/snippit1/index.html</guid>
+  <pubDate>Sun, 19 Mar 2023 06:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>snippit 2</title>
+  <link>https://jmhumphreys.github.io/snippits/snippit2/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<section id="intro" class="level1">
+<h1>Intro</h1>
+<p>Very important words.</p>
+</section>
+<section id="step-one" class="level1">
+<h1>Step one</h1>
+<p>Better detailing improtant thoughts than was done above.</p>
+<section id="code-chunk" class="level2">
+<h2 class="anchored" data-anchor-id="code-chunk">Code chunk</h2>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="dv" style="color: #AD0000;">100</span><span class="sc" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">3</span></span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 33.33333</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="step-two" class="level1">
+<h1>Step two</h1>
+<p>Work in progress</p>
+<section id="code-chunk-again" class="level2">
+<h2 class="anchored" data-anchor-id="code-chunk-again">Code chunk again</h2>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">MyFrame <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">as.data.frame</span>(</span>
+<span id="cb3-2">                  <span class="fu" style="color: #4758AB;">cbind</span>(<span class="at" style="color: #657422;">H =</span> <span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1000</span>,<span class="dv" style="color: #AD0000;">1</span>),</span>
+<span id="cb3-3">                        <span class="at" style="color: #657422;">V =</span> <span class="fu" style="color: #4758AB;">rnorm</span>(<span class="fu" style="color: #4758AB;">length</span>(<span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">1000</span>,<span class="dv" style="color: #AD0000;">1</span>))))</span>
+<span id="cb3-4">)</span>
+<span id="cb3-5"></span>
+<span id="cb3-6"></span>
+<span id="cb3-7"><span class="fu" style="color: #4758AB;">library</span>(ggplot2)</span>
+<span id="cb3-8"></span>
+<span id="cb3-9"><span class="fu" style="color: #4758AB;">ggplot</span>(MyFrame, <span class="fu" style="color: #4758AB;">aes</span>(H,V)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-10">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="at" style="color: #657422;">col=</span><span class="st" style="color: #20794D;">"red"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/snippits/snippit2/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>```</p>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <category>inla</category>
+  <category>geostatistics</category>
+  <guid>https://jmhumphreys.github.io/snippits/snippit2/index.html</guid>
+  <pubDate>Sun, 19 Mar 2023 06:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>
