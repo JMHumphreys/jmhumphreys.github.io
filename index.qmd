@@ -23,7 +23,7 @@ editor_options:
 <div>
 
 # Hello
-Learning Quarto - work in progress! More words here...
+Learning Quarto - work in progress! 
 
 <div>
 

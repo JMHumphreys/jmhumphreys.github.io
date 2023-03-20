@@ -1,3 +1,10 @@
 .card-file-modified:before {
     content: "Updated: ";
 }
+
+.reveal .slide-logo {
+  height: 100px !important;
+  width: 100px!important;
+  max-width: unset !important;
+  max-height: unset !important;
+}
