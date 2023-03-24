@@ -1,5 +1,5 @@
 ---
-title: "Abbrevaitaed workflows and small code blocks"
+title: "Abbreviataed workflows and small code blocks"
 #subtitle: "Past, current, and aspiring projects"
 listing:
   contents: snippits
