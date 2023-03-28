@@ -30,10 +30,11 @@
   </url>
   <url>
     <loc>https://jmhumphreys.github.io/about.html</loc>
-    <lastmod>2023-03-20T01:54:35.011Z</lastmod>
+    <lastmod>2023-03-24T21:29:39.185Z</lastmod>
   </url>
   <url>
     <loc>https://jmhumphreys.github.io/projects/attempt1/index.html</loc>
+<<<<<<< HEAD
     <lastmod>2023-03-28T21:52:10.623Z</lastmod>
   </url>
   <url>
@@ -43,6 +44,17 @@
   <url>
     <loc>https://jmhumphreys.github.io/index.html</loc>
     <lastmod>2023-03-28T21:52:07.694Z</lastmod>
+=======
+    <lastmod>2023-03-22T21:26:04.849Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jmhumphreys.github.io/pindex.html</loc>
+    <lastmod>2023-03-28T02:27:56.816Z</lastmod>
+  </url>
+  <url>
+    <loc>https://jmhumphreys.github.io/index.html</loc>
+    <lastmod>2023-03-24T21:29:34.196Z</lastmod>
+>>>>>>> b02bb8e621b4c42493e71044fb92539794d7f288
   </url>
   <url>
     <loc>https://jmhumphreys.github.io/section2.html</loc>
@@ -58,7 +70,11 @@
   </url>
   <url>
     <loc>https://jmhumphreys.github.io/projects/attempt2/index.html</loc>
+<<<<<<< HEAD
     <lastmod>2023-03-28T21:52:11.191Z</lastmod>
+=======
+    <lastmod>2023-03-28T02:28:03.463Z</lastmod>
+>>>>>>> b02bb8e621b4c42493e71044fb92539794d7f288
   </url>
   <url>
     <loc>https://jmhumphreys.github.io/snippits/snippit1/index.html</loc>
@@ -66,7 +82,11 @@
   </url>
   <url>
     <loc>https://jmhumphreys.github.io/sindex.html</loc>
+<<<<<<< HEAD
     <lastmod>2023-03-28T21:52:32.976Z</lastmod>
+=======
+    <lastmod>2023-03-28T02:27:59.200Z</lastmod>
+>>>>>>> b02bb8e621b4c42493e71044fb92539794d7f288
   </url>
   <url>
     <loc>https://jmhumphreys.github.io/snippits/snippit2/index.html</loc>

@@ -67,14 +67,18 @@
     "href": "pindex.html",
     "title": "Past, current, and aspirant projects",
     "section": "",
+<<<<<<< HEAD
     "text": "Projects\n\nProjects here are more developed and complete than those found in Snippits.\n\n\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Updated - Oldest\n        \n         \n          Updated - Newest\n        \n     \n  \n\n\n\n\n\n\n\n\n\n\nAttempt to create a Project Page\n\n\n0 min\n\n\nJust a webpage test\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 20, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\nAttempt to create a SECOND Project Page\n\n\n0 min\n\n\nAn entirely different fake project\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 20, 2023\n\n\n\n\n\n\n\nNo matching items"
+=======
+    "text": "Projects\nProjects here are more developed and complete than those found in Snippits.\n\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Updated - Oldest\n        \n         \n          Updated - Newest\n        \n     \n  \n\n\n\n\n\n\n\n\n\n\nAttempt to create a Project Page\n\n\n0 min\n\n\nJust a webpage test\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 22, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\nAttempt to create a SECOND Project Page\n\n\n0 min\n\n\nAn entirely different fake project\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 27, 2023\n\n\n\n\n\n\n\nNo matching items"
+>>>>>>> b02bb8e621b4c42493e71044fb92539794d7f288
   },
   {
     "objectID": "projects/attempt2/index.html",
     "href": "projects/attempt2/index.html",
     "title": "Attempt to create a SECOND Project Page",
     "section": "",
-    "text": "Attempt at a second page.\n\nSome Chunk\n\n\nHide code\nplot(density(rnorm(10000)))\n\n\n\n\n\n\n\nAnother Darned Chunk\n\nNot Pie\nA second chunk of code.\n\n\nHide code\n22/7\n\n\n[1] 3.142857\n\n\n\n\n\n\n\nCitationBibTeX citation:@online{2023,\n  author = {},\n  title = {Attempt to Create a {SECOND} {Project} {Page}},\n  date = {2023-03-19},\n  url = {https://jmhumphreys.github.io//projects/attempt2},\n  langid = {en}\n}\nFor attribution, please cite this work as:\n“Attempt to Create a SECOND Project Page.” 2023. March 19,\n2023. https://jmhumphreys.github.io//projects/attempt2."
+    "text": "Attempt at a second page.\n\nSome Chunk\n\n\nHide code\nplot(density(rnorm(10000)))\n\n\n\n\n\n\n\nAnother Darned Chunk\n\nNot Pie\nA second chunk of code.\n\n\nHide code\n22/7\n\n\n[1] 3.142857\n\n\n\n\nTest Chunk\nA third chunk of code.\n\n\nHide code\n22/11.1\n\n\n[1] 1.981982\n\n\n\n\n\n\n\nCitationBibTeX citation:@online{2023,\n  author = {},\n  title = {Attempt to Create a {SECOND} {Project} {Page}},\n  date = {2023-03-19},\n  url = {https://jmhumphreys.github.io//projects/attempt2},\n  langid = {en}\n}\nFor attribution, please cite this work as:\n“Attempt to Create a SECOND Project Page.” 2023. March 19,\n2023. https://jmhumphreys.github.io//projects/attempt2."
   },
   {
     "objectID": "projects/attempt2/index.html#not-pie",
@@ -107,9 +111,13 @@
   {
     "objectID": "sindex.html",
     "href": "sindex.html",
-    "title": "Abbrevaitaed workflows and small code blocks",
+    "title": "Abbreviataed workflows and small code blocks",
     "section": "",
+<<<<<<< HEAD
     "text": "Snippits\n\nOne-off analyses and less developed code than found in Projects.\n\n\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Updated - Oldest\n        \n         \n          Updated - Newest\n        \n     \n  \n\n\n\n\n\n\n\nsnippit 1\n\n\n0 min\n\n\nJust a placeholder as I’m figuring things out\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 28, 2023\n\n\n\n\n\n\n\n\n\n\nsnippit 2\n\n\n0 min\n\n\nSeconf code placeholder\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 20, 2023\n\n\n\n\n\n\n\nNo matching items"
+=======
+    "text": "Snippits\nOne-off analyses and less developed code than found in Projects.\n\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Updated - Oldest\n        \n         \n          Updated - Newest\n        \n     \n  \n\n\n\n\n\n\n\nsnippit 1\n\n\n0 min\n\n\nJust a placeholder as I’m figuring things out\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 19, 2023\n\n\n\n\n\n\n\n\n\n\nsnippit 2\n\n\n0 min\n\n\nSeconf code placeholder\n\n\n\nMar 19, 2023\n\n\n\n\n\nMar 19, 2023\n\n\n\n\n\n\n\nNo matching items"
+>>>>>>> b02bb8e621b4c42493e71044fb92539794d7f288
   },
   {
     "objectID": "snippits/snippit2/index.html",

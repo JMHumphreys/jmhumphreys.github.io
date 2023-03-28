@@ -10,6 +10,10 @@
 <atom:link href="https://jmhumphreys.github.io/sindex-r.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.2.335</generator>
+<<<<<<< HEAD
 <lastBuildDate>Tue, 28 Mar 2023 21:52:32 GMT</lastBuildDate>
+=======
+<lastBuildDate>Tue, 28 Mar 2023 02:27:59 GMT</lastBuildDate>
+>>>>>>> b02bb8e621b4c42493e71044fb92539794d7f288
 </channel>
 </rss>
