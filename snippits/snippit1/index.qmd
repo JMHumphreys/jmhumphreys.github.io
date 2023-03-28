@@ -30,16 +30,17 @@ Long story short.
 Here's my explanation.
 
 ## Code chunk
+
 ```{r}
 76*25*0.24
 ```
-
 
 # Step two
 
 Here's my explanation of the next step.
 
 ## Code chunk again
+
 ```{r}
 pi*7
 ```
@@ -49,7 +50,7 @@ pi*7
 Here's my explanation of the third step.
 
 ## Code chunk again
+
 ```{r}
 pi*7/9
 ```
-
