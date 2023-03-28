@@ -52,22 +52,6 @@
 <pre><code>[1] 21.99115</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="step-three" class="level1">
-<h1>Step three</h1>
-<p>Here’s my explanation of the third step.</p>
-<section id="code-chunk-again-1" class="level2">
-<h2 class="anchored" data-anchor-id="code-chunk-again-1">Code chunk again</h2>
-<div class="cell">
-<details open="">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">pi<span class="sc" style="color: #5E5E5E;">*</span><span class="dv" style="color: #AD0000;">7</span><span class="sc" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">9</span></span></code></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.443461</code></pre>
-</div>
-</div>
 
 
 </section>

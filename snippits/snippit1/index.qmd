@@ -44,12 +44,3 @@ Here's my explanation of the next step.
 pi*7
 ```
 
-# Step three
-
-Here's my explanation of the third step.
-
-## Code chunk again
-```{r}
-pi*7/9
-```
-
