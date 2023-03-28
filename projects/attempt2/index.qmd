@@ -40,10 +40,3 @@ A second chunk of code.
 ```{r}
 22/7
 ```
-
-
-### Test Chunk
-A third chunk of code.
-```{r}
-22/11.1
-```
