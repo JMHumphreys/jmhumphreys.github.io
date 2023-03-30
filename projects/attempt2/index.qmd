@@ -40,3 +40,12 @@ A second chunk of code.
 ```{r}
 22/7
 ```
+
+
+# Yet, another
+
+### Checking TOC
+A third chunk of code.
+```{r}
+2+2+4
+```
