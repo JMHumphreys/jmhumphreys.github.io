@@ -47,5 +47,5 @@ A second chunk of code.
 ### Checking TOC
 A third chunk of code.
 ```{r}
-2+2+4+6/3
+2+2+4+6/5
 ```
