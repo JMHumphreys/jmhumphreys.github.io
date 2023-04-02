@@ -68,7 +68,7 @@
 <div class="cell">
 <details open="">
 <summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">plot</span>(<span class="fu" style="color: #4758AB;">density</span>(<span class="fu" style="color: #4758AB;">rnorm</span>(<span class="dv" style="color: #AD0000;">10000</span>)))</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">plot</span>(<span class="fu" style="color: #4758AB;">density</span>(<span class="fu" style="color: #4758AB;">rnorm</span>(<span class="dv" style="color: #AD0000;">10000</span>)), <span class="at" style="color: #657422;">col=</span><span class="st" style="color: #20794D;">"brown"</span>)</span></code></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="https://jmhumphreys.github.io/projects/attempt2/index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
