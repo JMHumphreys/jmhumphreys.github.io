@@ -29,7 +29,7 @@ Attempt at a second page.
 
 ```{r}
 
-plot(density(rnorm(10000)), col="brown")
+plot(density(rnorm(10000)), col="red")
 ```
 
 
