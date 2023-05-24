@@ -10,7 +10,2553 @@
 <atom:link href="https://jmhumphreys.github.io/pindex.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Sun, 19 Mar 2023 06:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 18 May 2023 06:00:00 GMT</lastBuildDate>
+<item>
+  <title>CovidCAR Package Overview</title>
+  <link>https://jmhumphreys.github.io/projects/ccintro/ccintro.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<style type="text/css">
+
+body, td {
+   font-size: 13pt;
+}
+code.r{
+  font-size: 11pt;
+}
+pre {
+  font-size: 11pt
+}
+</style>
+<section id="overview" class="level1">
+<h1>Overview</h1>
+<p>This introduction briefly outlines core functions used to preprocess observation data, build spatial-temporal models, and post-process model outputs. Its purpose is to demonstrate a standard workflow not to provide an in depth examination of functions or model building techniques.</p>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<ul>
+<li><a href="https://github.com/JMHumphreys/CovidCAR">The CovidCAR GitHub page</a><br>
+</li>
+<li><a href="https://jmhumphreys.github.io/CovidCAR/reference/index.html">CovidCAR Functions Reference site</a></li>
+</ul>
+</section>
+</section>
+<section id="preliminaries" class="level1">
+<h1>Preliminaries</h1>
+<p><strong>Load needed packages</strong><br>
+A few of these packages are not available on CRAN and will need to be installed from other locations.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;">#comments and prompts</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">options</span>(<span class="at" style="color: #657422;">dplyr.summarise.inform =</span> <span class="cn" style="color: #8f5902;">FALSE</span>)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(cli)</span>
+<span id="cb1-4"></span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="co" style="color: #5E5E5E;">#wrangling</span></span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-8"><span class="fu" style="color: #4758AB;">library</span>(lubridate)</span>
+<span id="cb1-9"><span class="fu" style="color: #4758AB;">library</span>(arrow)</span>
+<span id="cb1-10"><span class="fu" style="color: #4758AB;">library</span>(Hmisc)</span>
+<span id="cb1-11"><span class="fu" style="color: #4758AB;">library</span>(yaml)</span>
+<span id="cb1-12"></span>
+<span id="cb1-13"><span class="co" style="color: #5E5E5E;">#spatial manipulation</span></span>
+<span id="cb1-14"><span class="fu" style="color: #4758AB;">library</span>(sp)</span>
+<span id="cb1-15"><span class="fu" style="color: #4758AB;">library</span>(sf)</span>
+<span id="cb1-16"><span class="fu" style="color: #4758AB;">library</span>(spdep)</span>
+<span id="cb1-17"><span class="fu" style="color: #4758AB;">library</span>(rgeos)</span>
+<span id="cb1-18"><span class="fu" style="color: #4758AB;">library</span>(igraph)</span>
+<span id="cb1-19"><span class="fu" style="color: #4758AB;">library</span>(maptools)</span>
+<span id="cb1-20"><span class="fu" style="color: #4758AB;">library</span>(mapproj)</span>
+<span id="cb1-21"></span>
+<span id="cb1-22"><span class="co" style="color: #5E5E5E;">#census data</span></span>
+<span id="cb1-23"><span class="fu" style="color: #4758AB;">library</span>(censusapi)</span>
+<span id="cb1-24"></span>
+<span id="cb1-25"><span class="co" style="color: #5E5E5E;">#forecast data</span></span>
+<span id="cb1-26"><span class="fu" style="color: #4758AB;">library</span>(zoltr) <span class="co" style="color: #5E5E5E;">#Not available on CRAN</span></span>
+<span id="cb1-27"><span class="co" style="color: #5E5E5E;">#remotes::install_github("reichlab/zoltr")</span></span>
+<span id="cb1-28"><span class="fu" style="color: #4758AB;">library</span>(covidHubUtils) <span class="co" style="color: #5E5E5E;">#Not available on CRAN</span></span>
+<span id="cb1-29"><span class="co" style="color: #5E5E5E;">#remotes::install_github("reichlab/covidHubUtils")</span></span>
+<span id="cb1-30"></span>
+<span id="cb1-31"><span class="co" style="color: #5E5E5E;">#inference</span></span>
+<span id="cb1-32"><span class="fu" style="color: #4758AB;">library</span>(INLA) <span class="co" style="color: #5E5E5E;">#Not available on CRAN</span></span>
+<span id="cb1-33"><span class="co" style="color: #5E5E5E;">#install.packages("INLA",repos=c(getOption("repos"),</span></span>
+<span id="cb1-34"><span class="co" style="color: #5E5E5E;">#INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)</span></span>
+<span id="cb1-35"></span>
+<span id="cb1-36"><span class="fu" style="color: #4758AB;">library</span>(EpiEstim)</span>
+<span id="cb1-37"><span class="fu" style="color: #4758AB;">library</span>(forecast)</span></code></pre></div>
+</details>
+</div>
+<p><a href="https://github.com/JMHumphreys/CovidCAR"><strong>CovidCAR</strong></a> currently on GitHub</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;">library</span>(CovidCAR)</span>
+<span id="cb2-2"><span class="co" style="color: #5E5E5E;">#devtools::install_github("JMHumphreys/CovidCAR")</span></span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="setup-analysis" class="level1">
+<h1>Setup Analysis</h1>
+<section id="specifiy-dates-and-directories" class="level2">
+<h2 class="anchored" data-anchor-id="specifiy-dates-and-directories">Specifiy Dates and Directories</h2>
+<p>The <em>setup_analysis()</em> function defines key date thresholds for model training and forecast horizon periods and should always be run before using any other functions in the <strong>CovidCAR</strong> package. The dates are written to a yaml file for use by other functions.</p>
+<p>The function also allows for recording directory paths to (optionally) write outputs outside of the working directory or to pull previously cached observation data (cache as created with <strong>Covid19Forecast</strong>.v1).</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">my_ouputs <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">"C:/Users/unp7/Desktop/Misc/CovidCAR_test"</span></span>
+<span id="cb3-2">my_local <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">"C:/Users/unp7/Desktop/GitHub/covid19Forecasts/local/cache"</span></span>
+<span id="cb3-3"></span>
+<span id="cb3-4"><span class="fu" style="color: #4758AB;">setup_analysis</span>(<span class="at" style="color: #657422;">report_date =</span> <span class="st" style="color: #20794D;">"2021-08-23"</span>, <span class="co" style="color: #5E5E5E;">#report date, first forecast day</span></span>
+<span id="cb3-5">               <span class="at" style="color: #657422;">training_period =</span> <span class="dv" style="color: #AD0000;">2</span><span class="sc" style="color: #5E5E5E;">*</span><span class="dv" style="color: #AD0000;">28</span>, <span class="co" style="color: #5E5E5E;">#days</span></span>
+<span id="cb3-6">               <span class="at" style="color: #657422;">forecast_horizon =</span> <span class="dv" style="color: #AD0000;">28</span>, <span class="co" style="color: #5E5E5E;">#days</span></span>
+<span id="cb3-7">               <span class="at" style="color: #657422;">output_dir =</span> my_ouputs, <span class="co" style="color: #5E5E5E;">#write outputs here</span></span>
+<span id="cb3-8">               <span class="at" style="color: #657422;">local_cache_dir =</span> my_local <span class="co" style="color: #5E5E5E;">#cache</span></span>
+<span id="cb3-9">)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ Your local cache will be available to get_covid19_obs()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ Analysis outputs will be written to C:/Users/unp7/Desktop/Misc/CovidCAR_test/2021-08-23-CovidCAR-run2023-05-23</code></pre>
+</div>
+</div>
+</section>
+<section id="define-spatial-domain" class="level2">
+<h2 class="anchored" data-anchor-id="define-spatial-domain">Define Spatial Domain</h2>
+<p>The <em>download_boundaries()</em> function pulls US State and territorial boundaries (ESRI shapefiles) from sources in the public domain. Some basic projection is performed, the shapefile is converted to a SpatialPolygonsDataFrame, and data attributes for a location identifier (‘Region’) and name (‘State’) are appended to the object.</p>
+<p>NOTE: The function includes an option to download county boundaries (unit=“county”) but there are some timeout issues that need to be resolved due to large file size.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">States <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">download_boundaries</span>(<span class="at" style="color: #657422;">unit =</span> <span class="st" style="color: #20794D;">"state"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ Downloading polygon files...</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `us-state-boundaries' from data source 
+  `C:\Users\unp7\Desktop\Misc\CovidCAR_test\2021-08-23-CovidCAR-run2023-05-23\polygons' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 56 features and 20 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -179.2311 ymin: -14.60181 xmax: 179.8597 ymax: 71.44069
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;">class</span>(States)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "SpatialPolygonsDataFrame"
+attr(,"package")
+[1] "sp"</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;">head</span>(States<span class="sc" style="color: #5E5E5E;">@</span>data[,<span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Region"</span>, <span class="st" style="color: #20794D;">"State"</span>)]) <span class="co" style="color: #5E5E5E;">#appended attributes  </span></span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Region</th>
+<th style="text-align: left;">State</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Virgin Islands</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Wisconsin</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Vermont</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">New Jersey</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Colorado</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">South Carolina</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="adjacency-graph" class="level2">
+<h2 class="anchored" data-anchor-id="adjacency-graph">Adjacency Graph</h2>
+<p>The <em>get_neighbors()</em> function is used to identify polygons (States and Territories in this example) that are located next to each other. Neighbor information is recorded in a matrix (dimensions: location*location) that is included with the CAR model. Estimates for any one location are then ‘conditional’ on the estimates for surrounding locations.</p>
+<p>NOTE: Polygons representing locations such as Hawaii and Guam are isolated from other locations (termed ‘islands’) and can be problematic. One option in this situation is to force connections between locations; the function’s ‘connect’ option will force connections between islands and other locations based on proximity.</p>
+<p><strong>Example: Islands with “no links”</strong></p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">nb_islands <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">get_neighbors</span>(States, <span class="at" style="color: #657422;">connect=</span><span class="cn" style="color: #8f5902;">FALSE</span>)</span>
+<span id="cb12-2"><span class="fu" style="color: #4758AB;">summary</span>(nb_islands) <span class="co" style="color: #5E5E5E;">#note that "7 regions with no links"</span></span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 56 
+Number of nonzero links: 224 
+Percentage nonzero weights: 7.142857 
+Average number of links: 4 
+7 regions with no links:
+1 24 32 33 38 42 54
+Link number distribution:
+
+ 0  1  2  3  4  5  6  7  8 
+ 7  1  4  9  9 10 12  2  2 
+1 least connected region:
+13 with 1 link
+2 most connected regions:
+49 56 with 8 links</code></pre>
+</div>
+</div>
+<p><strong>Example: All locations linked</strong></p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">nb_coerced <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">get_neighbors</span>(States, <span class="at" style="color: #657422;">connect=</span><span class="cn" style="color: #8f5902;">TRUE</span>)</span>
+<span id="cb14-2"><span class="fu" style="color: #4758AB;">summary</span>(nb_coerced)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 56 
+Number of nonzero links: 242 
+Percentage nonzero weights: 7.716837 
+Average number of links: 4.321429 
+Link number distribution:
+
+ 1  2  3  4  5  6  7  8 
+ 5  3 10 12 10 11  3  2 
+5 least connected regions:
+1 13 38 42 54 with 1 link
+2 most connected regions:
+49 56 with 8 links</code></pre>
+</div>
+</div>
+<p><strong>View mapped adjacency</strong><br>
+The <em>plot_neighbors()</em> function overlays adjacency connections on mapped location boundaries.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;">plot_neighbors</span>(States, nb_islands)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Regions defined for each Polygons</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/projects/ccintro/ccintro_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><span class="fu" style="color: #4758AB;">plot_neighbors</span>(States, nb_coerced)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Regions defined for each Polygons</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/projects/ccintro/ccintro_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><strong>Convert to INLA Graph</strong> The <em>nb2INLA()</em> and <em>inla.read.graph()</em> functions are provided by the <strong>INLA</strong> package.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="fu" style="color: #4758AB;">nb2INLA</span>(<span class="st" style="color: #20794D;">"J"</span>, nb_coerced)</span>
+<span id="cb20-2">J <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">inla.read.graph</span>(<span class="st" style="color: #20794D;">"J"</span>)</span></code></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="retrieve-observation-data" class="level1">
+<h1>Retrieve Observation Data</h1>
+<p>The <em>get_covid19_obs()</em> function downloads hospital incidence data for a specified data range.</p>
+<section id="the-source-options-for-data-to-be-retrieved" class="level4">
+<h4 class="anchored" data-anchor-id="the-source-options-for-data-to-be-retrieved">The <em>source</em> options for data to be retrieved:</h4>
+<ul>
+<li>The <strong>covidcast</strong> package<br>
+</li>
+<li>From a local <em>cache</em> as created by the <strong>covid19Forecasts</strong> package (i.e., refactored pipeline pkg)<br>
+</li>
+<li>From <em>test</em> data available from the package itself (sample from summer 2021)</li>
+</ul>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1">MinDate <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">min</span>(su_yaml<span class="sc" style="color: #5E5E5E;">$</span>full_time_span)</span>
+<span id="cb21-2">MaxDate <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">max</span>(su_yaml<span class="sc" style="color: #5E5E5E;">$</span>full_time_span)</span>
+<span id="cb21-3"></span>
+<span id="cb21-4">testData <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">get_covid19_obs</span>(<span class="at" style="color: #657422;">source =</span> <span class="st" style="color: #20794D;">"covidcast"</span>, </span>
+<span id="cb21-5">                           <span class="at" style="color: #657422;">start_date =</span> MinDate, <span class="at" style="color: #657422;">end_date =</span> MaxDate, </span>
+<span id="cb21-6">                           <span class="at" style="color: #657422;">write_copy =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span>
+<span id="cb21-7"><span class="co" style="color: #5E5E5E;">#testData = get_covid19_obs(source = "cache", start_date = MinDate, end_date = MaxDate)</span></span>
+<span id="cb21-8"><span class="co" style="color: #5E5E5E;">#testData = get_covid19_obs(source = "test", start_date = MinDate, end_date = MaxDate)</span></span>
+<span id="cb21-9"></span>
+<span id="cb21-10"><span class="fu" style="color: #4758AB;">dim</span>(testData)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4534    5</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="fu" style="color: #4758AB;">head</span>(testData)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">value</th>
+<th style="text-align: left;">signal</th>
+<th style="text-align: left;">location</th>
+<th style="text-align: left;">location_name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">01</td>
+<td style="text-align: left;">Alabama</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">05</td>
+<td style="text-align: left;">Arkansas</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">04</td>
+<td style="text-align: left;">Arizona</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">201</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">06</td>
+<td style="text-align: left;">California</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">08</td>
+<td style="text-align: left;">Colorado</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>Add Spatial Index</strong><br>
+The <em>append_region_index()</em> function matches location names in the observation data to the <em>Region</em> index in the polygon boundaries object, which also corresponds with the adjaceny matrix. The Region index is added as a column to the observations as is a new <strong>trn_tst</strong> column that is coded with either a <strong>trn</strong> or <strong>tst</strong> nominal indicator to distinguish time periods used for model training (observed) and testing (not observed).</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">train_data <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">append_region_index</span>(<span class="at" style="color: #657422;">train_data =</span> testData, <span class="at" style="color: #657422;">polys =</span> States)</span>
+<span id="cb24-2"><span class="fu" style="color: #4758AB;">which</span>(<span class="fu" style="color: #4758AB;">is.na</span>(train_data<span class="sc" style="color: #5E5E5E;">$</span>Region))</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>integer(0)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="forecast-template" class="level1">
+<h1>Forecast Template</h1>
+<p>The <em>create_forecast_template()</em> function ensures that each location-time combination in the analysis is represented in the data ingested by the model. In the case of model runs using only historic observations, this function basically returns the original input but with some column names adjusted. This because the full date range was already represented. However, in the case of future dates where observations are not yet available, this function will add a row for each day through the forecast horizon coding the observed incidence <em>value</em> as NA as a placeholder.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1">train_data <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">create_forecast_template</span>(train_data)</span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="additional-covariates" class="level1">
+<h1>Additional Covariates</h1>
+<p>Demo models in this example are fairly simple but in many cases users will want to add additional predictors, signals, or covariates (independent variables). This section of the script demonstrates how to (1) pull and add demographic variables from the American Community Survey (ACS) and how to (2) add Rt estimates generated from the <strong>EpiEstim</strong> package.</p>
+<section id="demographic-data" class="level2">
+<h2 class="anchored" data-anchor-id="demographic-data">Demographic Data</h2>
+<p>The <em>getPovertyPop()</em> function provides a wrapper function for the <a href="https://centeronbudget.github.io/getcensus/"><strong>getCensus</strong> package</a> for loading American Community Survey (ACS) data from the U.S. Census Bureau. In this example, an API key (‘secret_api’) is used to pull the percent of each state’s total population in poverty (SAEPOVRTALL_PT) and the number of individuals over the age of 55yrs (given in the <em>vars_pop</em> option).</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">PovPop_data <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">getPovertyPop</span>(<span class="at" style="color: #657422;">key =</span> <span class="fu" style="color: #4758AB;">get_api</span>(<span class="st" style="color: #20794D;">"censusapi"</span>), <span class="co" style="color: #5E5E5E;">#function reads 'secrets.yaml' for specified name</span></span>
+<span id="cb27-2">                            <span class="at" style="color: #657422;">vars_pov =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"SAEPOVRTALL_PT"</span>), </span>
+<span id="cb27-3">                            <span class="at" style="color: #657422;">vars_pop =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">'AGEGROUP'</span>,<span class="st" style="color: #20794D;">'POP'</span>), </span>
+<span id="cb27-4">                            <span class="at" style="color: #657422;">filt_age =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">12</span>,<span class="dv" style="color: #AD0000;">18</span>))</span></code></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1">train_data <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">left_join</span>(train_data, PovPop_data, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"location"</span>)</span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="rt-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="rt-estimation">Rt Estimation</h2>
+<p>The <em>Rt_projection()</em> function combines the <em>estimate_R()</em> function from the <a href="https://github.com/mrc-ide/EpiEstim"><strong>EpiEstim</strong> package</a> with simple timeseries models to forecast Rt estimated over the model training period across the forecast horizon (28 days in the future). Both the ‘raw’ Rt estimate (‘Rt_raw’) for the observation period only and the forecast values (‘Rt’) are added to the dataframe.</p>
+<section id="forecast-models-include" class="level4">
+<h4 class="anchored" data-anchor-id="forecast-models-include">Forecast models include:</h4>
+<ul>
+<li>simple ARIMA model using the <strong>forecast</strong> package (method=“arima”)<br>
+</li>
+<li>an order-2 random walk with noise and trend using the <strong>INLA</strong> package (method=“dlm)</li>
+</ul>
+<p>NOTE: This is an experimental function and the “dlm” method is used as an example. Models later in this demo will use the Rt_raw value to forecast concurrently with incidence estimation.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1">Rt_df <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">Rt_projection</span>(train_data, <span class="at" style="color: #657422;">mean_si =</span> <span class="fl" style="color: #AD0000;">5.7</span>, <span class="at" style="color: #657422;">std_si =</span> <span class="dv" style="color: #AD0000;">2</span>, </span>
+<span id="cb29-2">                      <span class="at" style="color: #657422;">forecast_horizon =</span> <span class="dv" style="color: #AD0000;">28</span>, <span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"dlm"</span>)</span></code></pre></div>
+</details>
+</div>
+<p><strong>Rt Estimates</strong><br>
+Checking <em>Rt_projection()</em> results</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1">Rt_df[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>,] <span class="co" style="color: #5E5E5E;">#check values</span></span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 12%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 13%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">value</th>
+<th style="text-align: left;">signal</th>
+<th style="text-align: left;">location</th>
+<th style="text-align: left;">location_name</th>
+<th style="text-align: left;">day</th>
+<th style="text-align: left;">trn_tst</th>
+<th style="text-align: right;">Region</th>
+<th style="text-align: right;">SAEPOVRTALL_PT</th>
+<th style="text-align: right;">age_pop</th>
+<th style="text-align: right;">Rt_raw</th>
+<th style="text-align: right;">Rt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Monday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-06-29</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Tuesday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-06-30</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Wednesday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-07-01</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Thursday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-07-02</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Friday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-07-03</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Saturday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-07-04</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Sunday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-07-05</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Monday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">3.295300</td>
+<td style="text-align: right;">3.272205</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-07-06</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Tuesday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">2.304267</td>
+<td style="text-align: right;">2.334882</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-07-07</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Wednesday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">1.858476</td>
+<td style="text-align: right;">1.848652</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1">Rt_df <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb31-2">  <span class="fu" style="color: #4758AB;">filter</span>(trn_tst <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"test"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb31-3">  <span class="fu" style="color: #4758AB;">slice</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>) <span class="co" style="color: #5E5E5E;">#check values (forecast period)</span></span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 13%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">value</th>
+<th style="text-align: left;">signal</th>
+<th style="text-align: left;">location</th>
+<th style="text-align: left;">location_name</th>
+<th style="text-align: left;">day</th>
+<th style="text-align: left;">trn_tst</th>
+<th style="text-align: right;">Region</th>
+<th style="text-align: right;">SAEPOVRTALL_PT</th>
+<th style="text-align: right;">age_pop</th>
+<th style="text-align: right;">Rt_raw</th>
+<th style="text-align: right;">Rt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2021-08-24</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Tuesday</td>
+<td style="text-align: left;">test</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.018219</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-08-25</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Wednesday</td>
+<td style="text-align: left;">test</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.051613</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-08-26</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Thursday</td>
+<td style="text-align: left;">test</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.085007</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-08-27</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Friday</td>
+<td style="text-align: left;">test</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.118401</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-08-28</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Saturday</td>
+<td style="text-align: left;">test</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.151794</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-08-29</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Sunday</td>
+<td style="text-align: left;">test</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.185188</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-08-30</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Monday</td>
+<td style="text-align: left;">test</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.218582</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-08-31</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Tuesday</td>
+<td style="text-align: left;">test</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.251977</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-09-01</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Wednesday</td>
+<td style="text-align: left;">test</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.285371</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-09-02</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Thursday</td>
+<td style="text-align: left;">test</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.318765</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="organize-data" class="level1">
+<h1>Organize Data</h1>
+<p>Model parameters, inputs, and covariates will vary from model-to-model and user-to-user but ultimately all need to be combined in a single object that can be ingested by the the inference software, INLA in this case. The code below modifies the train_data dataframe to perform any desired scaling and to add several spatial and temporal indices.</p>
+<p>Ordered integers are used as indices to define timesteps (days, weeks, etc), locations (‘Region’), and space*time combinations (e.g., ‘ID.Region.Wk’ in the next chunk). The modeling approach is hierarchical, so some indices may be used in multiple levels. But, each index name must be unique therefore some indices are copied and given slighly different names.</p>
+<p>Once data is organized, it is reformatted as a list object called a ‘datastack’ that is passed to the inference software. Although a daraframe might be more intuitive, a list object is used so that model inputs can be of different lengths.</p>
+<section id="clean-dataframe" class="level2">
+<h2 class="anchored" data-anchor-id="clean-dataframe">Clean Dataframe</h2>
+<p>The <em>time_index()</em> function is used to recode a date vector to the desired timestep duration (2-day steps, 1 week steps, etc).</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1">train_data <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.data.frame</span>(Rt_df) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb32-2">  <span class="fu" style="color: #4758AB;">mutate</span>(</span>
+<span id="cb32-3">    <span class="at" style="color: #657422;">s_pop =</span> <span class="fu" style="color: #4758AB;">log</span>(age_pop), <span class="co" style="color: #5E5E5E;">#log scale</span></span>
+<span id="cb32-4">    <span class="at" style="color: #657422;">s_pov =</span> <span class="fu" style="color: #4758AB;">as.numeric</span>(<span class="fu" style="color: #4758AB;">scale</span>(SAEPOVRTALL_PT)), <span class="co" style="color: #5E5E5E;">#some NAs present.  </span></span>
+<span id="cb32-5">    <span class="at" style="color: #657422;">doy =</span> <span class="fu" style="color: #4758AB;">as.integer</span>(<span class="fu" style="color: #4758AB;">as.factor</span>(date)),</span>
+<span id="cb32-6">    <span class="at" style="color: #657422;">doy.1 =</span> doy,</span>
+<span id="cb32-7">    <span class="at" style="color: #657422;">Region.Wk =</span> <span class="fu" style="color: #4758AB;">paste0</span>(<span class="st" style="color: #20794D;">"ID"</span>, Region, <span class="st" style="color: #20794D;">"W"</span>, doy), <span class="co" style="color: #5E5E5E;">#unique Region*doy combinations ('space-time interaction')</span></span>
+<span id="cb32-8">    <span class="at" style="color: #657422;">ID.Region.Wk =</span> <span class="fu" style="color: #4758AB;">as.integer</span>(<span class="fu" style="color: #4758AB;">as.factor</span>(Region.Wk)), <span class="co" style="color: #5E5E5E;">#convert factor levels to integer</span></span>
+<span id="cb32-9">    <span class="at" style="color: #657422;">week =</span> <span class="fu" style="color: #4758AB;">week</span>(date),</span>
+<span id="cb32-10">    <span class="at" style="color: #657422;">int_week.1 =</span> <span class="fu" style="color: #4758AB;">as.integer</span>(<span class="fu" style="color: #4758AB;">as.factor</span>(week)),</span>
+<span id="cb32-11">    <span class="at" style="color: #657422;">int_week.2 =</span> int_week<span class="fl" style="color: #AD0000;">.1</span>,</span>
+<span id="cb32-12">    <span class="at" style="color: #657422;">int_week.3 =</span> int_week<span class="fl" style="color: #AD0000;">.1</span>,</span>
+<span id="cb32-13">    <span class="at" style="color: #657422;">threeday_indx =</span> <span class="fu" style="color: #4758AB;">time_index</span>(date, <span class="fu" style="color: #4758AB;">seq</span>(<span class="fu" style="color: #4758AB;">min</span>(date), <span class="fu" style="color: #4758AB;">max</span>(date), <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"3 days"</span>)),</span>
+<span id="cb32-14">    <span class="at" style="color: #657422;">threeday_indx.1 =</span> <span class="fu" style="color: #4758AB;">as.integer</span>(<span class="fu" style="color: #4758AB;">as.factor</span>(threeday_indx)),</span>
+<span id="cb32-15">    <span class="at" style="color: #657422;">fourday_indx =</span> <span class="fu" style="color: #4758AB;">time_index</span>(date, <span class="fu" style="color: #4758AB;">seq</span>(<span class="fu" style="color: #4758AB;">min</span>(date), <span class="fu" style="color: #4758AB;">max</span>(date), <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"4 days"</span>)),</span>
+<span id="cb32-16">    <span class="at" style="color: #657422;">fourday_indx.1 =</span> <span class="fu" style="color: #4758AB;">as.integer</span>(<span class="fu" style="color: #4758AB;">as.factor</span>(fourday_indx)),</span>
+<span id="cb32-17">    <span class="at" style="color: #657422;">fiveday_indx =</span> <span class="fu" style="color: #4758AB;">time_index</span>(date, <span class="fu" style="color: #4758AB;">seq</span>(<span class="fu" style="color: #4758AB;">min</span>(date), <span class="fu" style="color: #4758AB;">max</span>(date), <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"5 days"</span>)),</span>
+<span id="cb32-18">    <span class="at" style="color: #657422;">fiveday_indx.1 =</span> <span class="fu" style="color: #4758AB;">as.integer</span>(<span class="fu" style="color: #4758AB;">as.factor</span>(fiveday_indx)),</span>
+<span id="cb32-19">    <span class="at" style="color: #657422;">eightday_indx =</span> <span class="fu" style="color: #4758AB;">time_index</span>(date, <span class="fu" style="color: #4758AB;">seq</span>(<span class="fu" style="color: #4758AB;">min</span>(date), <span class="fu" style="color: #4758AB;">max</span>(date), <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"8 days"</span>)),</span>
+<span id="cb32-20">    <span class="at" style="color: #657422;">eightday_indx.1 =</span> <span class="fu" style="color: #4758AB;">as.integer</span>(<span class="fu" style="color: #4758AB;">as.factor</span>(eightday_indx)),</span>
+<span id="cb32-21">    <span class="at" style="color: #657422;">biweek_indx =</span> <span class="fu" style="color: #4758AB;">time_index</span>(date, <span class="fu" style="color: #4758AB;">seq</span>(<span class="fu" style="color: #4758AB;">min</span>(date), <span class="fu" style="color: #4758AB;">max</span>(date), <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"14 days"</span>)),</span>
+<span id="cb32-22">    <span class="at" style="color: #657422;">biweek_indx.1 =</span> <span class="fu" style="color: #4758AB;">as.integer</span>(<span class="fu" style="color: #4758AB;">as.factor</span>(biweek_indx)),</span>
+<span id="cb32-23">    <span class="at" style="color: #657422;">Region.1 =</span> Region, <span class="at" style="color: #657422;">Region.2 =</span> Region, <span class="at" style="color: #657422;">Region.3 =</span> Region, </span>
+<span id="cb32-24">                <span class="at" style="color: #657422;">Region.4 =</span> Region, <span class="at" style="color: #657422;">Region.5 =</span> Region</span>
+<span id="cb32-25">  ) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb32-26">  <span class="fu" style="color: #4758AB;">select</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span>biweek_indx, threeday_indx, fourday_indx, fiveday_indx, eightday_indx))</span>
+<span id="cb32-27"></span>
+<span id="cb32-28"><span class="fu" style="color: #4758AB;">head</span>(train_data)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 4%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 3%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">value</th>
+<th style="text-align: left;">signal</th>
+<th style="text-align: left;">location</th>
+<th style="text-align: left;">location_name</th>
+<th style="text-align: left;">day</th>
+<th style="text-align: left;">trn_tst</th>
+<th style="text-align: right;">Region</th>
+<th style="text-align: right;">SAEPOVRTALL_PT</th>
+<th style="text-align: right;">age_pop</th>
+<th style="text-align: right;">Rt_raw</th>
+<th style="text-align: right;">Rt</th>
+<th style="text-align: right;">s_pop</th>
+<th style="text-align: right;">s_pov</th>
+<th style="text-align: right;">doy</th>
+<th style="text-align: right;">doy.1</th>
+<th style="text-align: left;">Region.Wk</th>
+<th style="text-align: right;">ID.Region.Wk</th>
+<th style="text-align: right;">week</th>
+<th style="text-align: right;">int_week.1</th>
+<th style="text-align: right;">int_week.2</th>
+<th style="text-align: right;">int_week.3</th>
+<th style="text-align: left;">threeday_indx</th>
+<th style="text-align: right;">threeday_indx.1</th>
+<th style="text-align: left;">fourday_indx</th>
+<th style="text-align: right;">fourday_indx.1</th>
+<th style="text-align: left;">fiveday_indx</th>
+<th style="text-align: right;">fiveday_indx.1</th>
+<th style="text-align: left;">eightday_indx</th>
+<th style="text-align: right;">eightday_indx.1</th>
+<th style="text-align: right;">biweek_indx.1</th>
+<th style="text-align: right;">Region.1</th>
+<th style="text-align: right;">Region.2</th>
+<th style="text-align: right;">Region.3</th>
+<th style="text-align: right;">Region.4</th>
+<th style="text-align: right;">Region.5</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Monday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">12.12772</td>
+<td style="text-align: right;">-0.8064822</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">ID38W1</td>
+<td style="text-align: right;">2466</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-06-29</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Tuesday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">12.12772</td>
+<td style="text-align: right;">-0.8064822</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">ID38W2</td>
+<td style="text-align: right;">2477</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-06-30</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Wednesday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">12.12772</td>
+<td style="text-align: right;">-0.8064822</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">ID38W3</td>
+<td style="text-align: right;">2488</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-07-01</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-07-01</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Thursday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">12.12772</td>
+<td style="text-align: right;">-0.8064822</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">ID38W4</td>
+<td style="text-align: right;">2499</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">2021-07-01</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-07-02</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-07-03</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-07-02</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Friday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">12.12772</td>
+<td style="text-align: right;">-0.8064822</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">ID38W5</td>
+<td style="text-align: right;">2510</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-07-01</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-07-02</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-07-03</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-06-28</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-07-03</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">hosp</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">Alaska</td>
+<td style="text-align: left;">Saturday</td>
+<td style="text-align: left;">train</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">184927</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">12.12772</td>
+<td style="text-align: right;">-0.8064822</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">ID38W6</td>
+<td style="text-align: right;">2521</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-07-04</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">2021-07-02</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-07-03</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2021-07-06</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">38</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="response-variable" class="level2">
+<h2 class="anchored" data-anchor-id="response-variable">Response Variable</h2>
+<p>The response variable may differ between models. In this case, copying hospital incidence (counts) to a new column, standardizing the distribution, and ensuring that observations for the forecast horizon are coded as NA. Retaining the scaling object and rewriting as function <em>obs_scale()</em> to transform model outputs back to the observation scale later.</p>
+<p>Again, response variables are specific to individual model setup so could be scaled differently or not at all to be fit with a different likelihood (Poisson, NegBinomial, etc). Keeping it simple here.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1">train_data<span class="sc" style="color: #5E5E5E;">$</span>resp <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">ifelse</span>(train_data<span class="sc" style="color: #5E5E5E;">$</span>trn_tst <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"train"</span>, train_data<span class="sc" style="color: #5E5E5E;">$</span>value, <span class="cn" style="color: #8f5902;">NA</span>) <span class="co" style="color: #5E5E5E;">#Set obs value to NA for forecasts periods</span></span>
+<span id="cb33-2"></span>
+<span id="cb33-3">resp_scale_obj <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">scale</span>(train_data<span class="sc" style="color: #5E5E5E;">$</span>resp, <span class="at" style="color: #657422;">scale=</span>T, <span class="at" style="color: #657422;">center=</span>T) <span class="co" style="color: #5E5E5E;">#scaled object</span></span>
+<span id="cb33-4">obs_scale <span class="ot" style="color: #003B4F;">=</span> <span class="cf" style="color: #003B4F;">function</span>(r)r<span class="sc" style="color: #5E5E5E;">*</span><span class="fu" style="color: #4758AB;">attr</span>(resp_scale_obj,<span class="st" style="color: #20794D;">'scaled:scale'</span>) <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">attr</span>(resp_scale_obj, <span class="st" style="color: #20794D;">'scaled:center'</span>) <span class="co" style="color: #5E5E5E;">#transform back to observation scale</span></span>
+<span id="cb33-5"></span>
+<span id="cb33-6">train_data<span class="sc" style="color: #5E5E5E;">$</span>nrm_resp <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">as.numeric</span>(resp_scale_obj)</span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="format-as-a-datastack" class="level2">
+<h2 class="anchored" data-anchor-id="format-as-a-datastack">Format as a Datastack</h2>
+<p>In this example, data could remain as a dataframe and passed to INLA directly, but as a matter of practice, it is better to format as a list object (datastack).</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1">nrm.lst <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">intercept1 =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="fu" style="color: #4758AB;">dim</span>(train_data)[<span class="dv" style="color: #AD0000;">1</span>])), <span class="co" style="color: #5E5E5E;">#custom intercept</span></span>
+<span id="cb34-2">          <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">pov_pct =</span> train_data[,<span class="st" style="color: #20794D;">"s_pov"</span>],                <span class="co" style="color: #5E5E5E;">#desired covariates and indices below</span></span>
+<span id="cb34-3">               <span class="at" style="color: #657422;">pop =</span> train_data[,<span class="st" style="color: #20794D;">"s_pop"</span>],                    <span class="co" style="color: #5E5E5E;">#formatting as nrm.lst = list()</span></span>
+<span id="cb34-4">               <span class="at" style="color: #657422;">Rt_raw =</span> train_data[,<span class="st" style="color: #20794D;">"Rt_raw"</span>],</span>
+<span id="cb34-5">               <span class="at" style="color: #657422;">Rt_raw.1 =</span> train_data[,<span class="st" style="color: #20794D;">"Rt_raw"</span>],</span>
+<span id="cb34-6">               <span class="at" style="color: #657422;">Rt =</span> train_data[,<span class="st" style="color: #20794D;">"Rt"</span>],</span>
+<span id="cb34-7">               <span class="at" style="color: #657422;">Rt.1 =</span> train_data[,<span class="st" style="color: #20794D;">"Rt"</span>],</span>
+<span id="cb34-8">               <span class="at" style="color: #657422;">doy =</span> train_data[,<span class="st" style="color: #20794D;">"doy"</span>],</span>
+<span id="cb34-9">               <span class="at" style="color: #657422;">doy.1 =</span> train_data[,<span class="st" style="color: #20794D;">"doy.1"</span>],</span>
+<span id="cb34-10">               <span class="at" style="color: #657422;">doy.2 =</span> train_data[,<span class="st" style="color: #20794D;">"doy.1"</span>],</span>
+<span id="cb34-11">               <span class="at" style="color: #657422;">int_week.1 =</span> train_data[,<span class="st" style="color: #20794D;">"int_week.1"</span>],</span>
+<span id="cb34-12">               <span class="at" style="color: #657422;">int_week.2 =</span> train_data[,<span class="st" style="color: #20794D;">"int_week.2"</span>],</span>
+<span id="cb34-13">               <span class="at" style="color: #657422;">int_week.3 =</span> train_data[,<span class="st" style="color: #20794D;">"int_week.3"</span>],</span>
+<span id="cb34-14">               <span class="at" style="color: #657422;">threeday_indx.1 =</span> train_data[,<span class="st" style="color: #20794D;">"threeday_indx.1"</span>],</span>
+<span id="cb34-15">               <span class="at" style="color: #657422;">fourday_indx.1 =</span> train_data[,<span class="st" style="color: #20794D;">"fourday_indx.1"</span>],</span>
+<span id="cb34-16">               <span class="at" style="color: #657422;">fiveday_indx.1 =</span> train_data[,<span class="st" style="color: #20794D;">"fiveday_indx.1"</span>],</span>
+<span id="cb34-17">               <span class="at" style="color: #657422;">eightday_indx.1 =</span> train_data[,<span class="st" style="color: #20794D;">"eightday_indx.1"</span>],</span>
+<span id="cb34-18">               <span class="at" style="color: #657422;">biwek_indx.1 =</span> train_data[,<span class="st" style="color: #20794D;">"biweek_indx.1"</span>],</span>
+<span id="cb34-19">               <span class="at" style="color: #657422;">Region.1 =</span> train_data[,<span class="st" style="color: #20794D;">"Region.1"</span>],</span>
+<span id="cb34-20">               <span class="at" style="color: #657422;">Region.2 =</span> train_data[,<span class="st" style="color: #20794D;">"Region.2"</span>],</span>
+<span id="cb34-21">               <span class="at" style="color: #657422;">Region.3 =</span> train_data[,<span class="st" style="color: #20794D;">"Region.3"</span>],</span>
+<span id="cb34-22">               <span class="at" style="color: #657422;">Region.4 =</span> train_data[,<span class="st" style="color: #20794D;">"Region.4"</span>],</span>
+<span id="cb34-23">               <span class="at" style="color: #657422;">Region.5 =</span> train_data[,<span class="st" style="color: #20794D;">"Region.5"</span>],</span>
+<span id="cb34-24">               <span class="at" style="color: #657422;">Region_Wk =</span> train_data[,<span class="st" style="color: #20794D;">"ID.Region.Wk"</span>],</span>
+<span id="cb34-25">               <span class="at" style="color: #657422;">dow =</span> train_data[,<span class="st" style="color: #20794D;">"day"</span>]))</span>
+<span id="cb34-26"></span>
+<span id="cb34-27">nrm.stk <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">inla.stack</span>(<span class="at" style="color: #657422;">data =</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">Y =</span> train_data<span class="sc" style="color: #5E5E5E;">$</span>nrm_resp), <span class="co" style="color: #5E5E5E;">#Y is response variable</span></span>
+<span id="cb34-28">                                      <span class="at" style="color: #657422;">A =</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>),       <span class="co" style="color: #5E5E5E;">#option to include matrices, not used in this case</span></span>
+<span id="cb34-29">                                <span class="at" style="color: #657422;">effects =</span> nrm.lst,         <span class="co" style="color: #5E5E5E;">#list object from above</span></span>
+<span id="cb34-30">                                    <span class="at" style="color: #657422;">tag =</span> <span class="st" style="color: #20794D;">"nrm"</span>)           <span class="co" style="color: #5E5E5E;">#arbitrary name to index searches later </span></span>
+<span id="cb34-31">                                                           <span class="co" style="color: #5E5E5E;">#(multiple datastack used in complex models)</span></span></code></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="model-priors-and-formulae" class="level1">
+<h1>Model Priors and Formulae</h1>
+<p>Specifying all priors and formulas for desired models using <a href="https://www.r-inla.org/"><strong>R-INLA</strong></a> syntax. A deep-dive would be needed to describe in detail, which would be too time consuming for this workflow focused demonstration.</p>
+<section id="a-few-notes" class="level3">
+<h3 class="anchored" data-anchor-id="a-few-notes">A few notes:</h3>
+<ul>
+<li>Priors
+<ul>
+<li><strong>pc</strong> refers to <a href="https://doi.org/10.1214/16-STS576">“Penalizing Complexity”</a></li>
+<li><strong>prec</strong> is “precision”<br>
+</li>
+<li><strong>cor</strong> is “correlation”<br>
+</li>
+<li>non-PC priors are coded using the distribution name (e.g., norm = “normal”)<br>
+</li>
+</ul></li>
+<li>Formulas
+<ul>
+<li><strong>Y</strong> is the response variable in the datastack</li>
+<li><em>f()</em> designates a function, level, or submodel in the hierarchy<br>
+</li>
+<li><strong>hyper=</strong> refers to the prior for that <em>f()</em></li>
+</ul></li>
+</ul>
+</section>
+<section id="set-priors" class="level2">
+<h2 class="anchored" data-anchor-id="set-priors">Set Priors</h2>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb35" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><span class="co" style="color: #5E5E5E;">#bym prior</span></span>
+<span id="cb35-2">bym_hyper <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">phi =</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">prior =</span> <span class="st" style="color: #20794D;">"pc"</span>, </span>
+<span id="cb35-3">                      <span class="at" style="color: #657422;">param =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="fl" style="color: #AD0000;">0.5</span>, <span class="dv" style="color: #AD0000;">2</span><span class="sc" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">3</span>), </span>
+<span id="cb35-4">                      <span class="at" style="color: #657422;">initial =</span> <span class="dv" style="color: #AD0000;">3</span>), </span>
+<span id="cb35-5">               <span class="at" style="color: #657422;">prec =</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">prior =</span> <span class="st" style="color: #20794D;">"pc.prec"</span>, </span>
+<span id="cb35-6">                       <span class="at" style="color: #657422;">param =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="fl" style="color: #AD0000;">0.01</span>), </span>
+<span id="cb35-7">                       <span class="at" style="color: #657422;">initial =</span> <span class="fl" style="color: #AD0000;">1.5</span>))  </span>
+<span id="cb35-8"><span class="co" style="color: #5E5E5E;">#Normal prior</span></span>
+<span id="cb35-9">norm.prior <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">theta=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">prior =</span> <span class="st" style="color: #20794D;">"normal"</span>, </span>
+<span id="cb35-10">                              <span class="at" style="color: #657422;">param=</span><span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>)))</span>
+<span id="cb35-11"></span>
+<span id="cb35-12"></span>
+<span id="cb35-13"><span class="co" style="color: #5E5E5E;">#iid prior</span></span>
+<span id="cb35-14">pc_prec_iid <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">theta =</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">prior=</span><span class="st" style="color: #20794D;">"pc.prec"</span>, </span>
+<span id="cb35-15">                                 <span class="at" style="color: #657422;">param=</span><span class="fu" style="color: #4758AB;">c</span>(<span class="fl" style="color: #AD0000;">0.5</span>, <span class="fl" style="color: #AD0000;">0.01</span>)))</span>
+<span id="cb35-16"></span>
+<span id="cb35-17"><span class="co" style="color: #5E5E5E;">#ar1 prior</span></span>
+<span id="cb35-18">pc_cor_ar1 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">theta =</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">prior =</span> <span class="st" style="color: #20794D;">'pccor1'</span>, </span>
+<span id="cb35-19">                                <span class="at" style="color: #657422;">param =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="fl" style="color: #AD0000;">0.5</span>, <span class="fl" style="color: #AD0000;">0.9</span>)))</span>
+<span id="cb35-20"></span>
+<span id="cb35-21"><span class="co" style="color: #5E5E5E;">#rw2 prior</span></span>
+<span id="cb35-22">pc_rw2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">prec=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">prior=</span><span class="st" style="color: #20794D;">"pc.prec"</span>, </span>
+<span id="cb35-23">                         <span class="at" style="color: #657422;">param=</span><span class="fu" style="color: #4758AB;">c</span>(<span class="fl" style="color: #AD0000;">0.5</span>,<span class="fl" style="color: #AD0000;">0.01</span>)))</span>
+<span id="cb35-24"></span>
+<span id="cb35-25"><span class="co" style="color: #5E5E5E;">#bundle priors to archive run</span></span>
+<span id="cb35-26">priors.list <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">list</span>()</span>
+<span id="cb35-27">priors.list[[<span class="st" style="color: #20794D;">"bym_hyper"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> bym_hyper</span>
+<span id="cb35-28">priors.list[[<span class="st" style="color: #20794D;">"norm.prior"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> norm.prior</span>
+<span id="cb35-29">priors.list[[<span class="st" style="color: #20794D;">"pc_prec_iid"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> pc_prec_iid</span>
+<span id="cb35-30">priors.list[[<span class="st" style="color: #20794D;">"pc_cor_ar1"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> pc_cor_ar1</span>
+<span id="cb35-31">priors.list[[<span class="st" style="color: #20794D;">"pc_rw2"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> pc_rw2</span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="specify-formulas" class="level2">
+<h2 class="anchored" data-anchor-id="specify-formulas">Specify Formulas</h2>
+<p><strong>Formula 1:</strong> Random Walk plus noise for each location (i.e., state)</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb36" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1">Frm<span class="fl" style="color: #AD0000;">.1</span> <span class="ot" style="color: #003B4F;">=</span> Y <span class="sc" style="color: #5E5E5E;">~</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">+</span>     <span class="co" style="color: #5E5E5E;">#remove default intercept</span></span>
+<span id="cb36-2">  intercept1 <span class="sc" style="color: #5E5E5E;">+</span>       <span class="co" style="color: #5E5E5E;">#custom intercept</span></span>
+<span id="cb36-3">  <span class="fu" style="color: #4758AB;">f</span>(doy<span class="fl" style="color: #AD0000;">.1</span>,           <span class="co" style="color: #5E5E5E;">#order by time index (daily)</span></span>
+<span id="cb36-4">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,     <span class="co" style="color: #5E5E5E;">#enforced zero mean</span></span>
+<span id="cb36-5">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"rw1"</span>,     <span class="co" style="color: #5E5E5E;">#order-1 random walk with noise</span></span>
+<span id="cb36-6">    <span class="at" style="color: #657422;">scale.model =</span> <span class="cn" style="color: #8f5902;">TRUE</span>, <span class="co" style="color: #5E5E5E;">#additional internal scaling</span></span>
+<span id="cb36-7">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.1</span>, <span class="co" style="color: #5E5E5E;">#run rw1 model for groups based on location </span></span>
+<span id="cb36-8">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>), <span class="co" style="color: #5E5E5E;">#groups are treated independently</span></span>
+<span id="cb36-9">    <span class="at" style="color: #657422;">hyper=</span>pc_rw2)  <span class="co" style="color: #5E5E5E;">#prior for rw2</span></span></code></pre></div>
+</details>
+</div>
+<p><strong>Formula 2:</strong> Random Walk plus noise and trend for each location</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb37" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1">Frm<span class="fl" style="color: #AD0000;">.2</span> <span class="ot" style="color: #003B4F;">=</span> Y <span class="sc" style="color: #5E5E5E;">~</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">+</span>     </span>
+<span id="cb37-2">  intercept1 <span class="sc" style="color: #5E5E5E;">+</span>       </span>
+<span id="cb37-3">  <span class="fu" style="color: #4758AB;">f</span>(doy<span class="fl" style="color: #AD0000;">.1</span>,           </span>
+<span id="cb37-4">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,     </span>
+<span id="cb37-5">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"rw1"</span>,    </span>
+<span id="cb37-6">    <span class="at" style="color: #657422;">scale.model =</span> <span class="cn" style="color: #8f5902;">TRUE</span>, </span>
+<span id="cb37-7">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.1</span>, </span>
+<span id="cb37-8">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>), </span>
+<span id="cb37-9">    <span class="at" style="color: #657422;">hyper=</span>pc_rw2) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb37-10">  <span class="fu" style="color: #4758AB;">f</span>(doy<span class="fl" style="color: #AD0000;">.2</span>, <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"linear"</span>, <span class="at" style="color: #657422;">mean.linear =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">prec.linear =</span> <span class="fl" style="color: #AD0000;">0.001</span>) <span class="co" style="color: #5E5E5E;">#add linear trend to rw1</span></span></code></pre></div>
+</details>
+</div>
+<p><strong>Formula 3:</strong> Common spatial effect for timesteps but each location has separate autoregression</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb38" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1">Frm<span class="fl" style="color: #AD0000;">.3</span> <span class="ot" style="color: #003B4F;">=</span> Y <span class="sc" style="color: #5E5E5E;">~</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">+</span>    </span>
+<span id="cb38-2">  intercept1 <span class="sc" style="color: #5E5E5E;">+</span>       </span>
+<span id="cb38-3">  <span class="fu" style="color: #4758AB;">f</span>(Region<span class="fl" style="color: #AD0000;">.1</span>,        <span class="co" style="color: #5E5E5E;">#location index</span></span>
+<span id="cb38-4">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"bym2"</span>,    <span class="co" style="color: #5E5E5E;">#spatial effect, Besag-York-Mollie model (the 2 indicates scaling) </span></span>
+<span id="cb38-5">    <span class="at" style="color: #657422;">graph=</span>J,         <span class="co" style="color: #5E5E5E;">#Adjacency graph to identify neighbors</span></span>
+<span id="cb38-6">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,     <span class="co" style="color: #5E5E5E;">#enforced zero mean</span></span>
+<span id="cb38-7">    <span class="at" style="color: #657422;">hyper=</span>bym_hyper) <span class="sc" style="color: #5E5E5E;">+</span> <span class="co" style="color: #5E5E5E;">#BYM prior</span></span>
+<span id="cb38-8">  <span class="fu" style="color: #4758AB;">f</span>(doy<span class="fl" style="color: #AD0000;">.1</span>,             <span class="co" style="color: #5E5E5E;">#order by time index (daily)</span></span>
+<span id="cb38-9">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>,       <span class="co" style="color: #5E5E5E;">#apply order-1 autoregressive</span></span>
+<span id="cb38-10">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb38-11">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.1</span>,  <span class="co" style="color: #5E5E5E;">#run ar1 model for groups based on location</span></span>
+<span id="cb38-12">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>), <span class="co" style="color: #5E5E5E;">#groups are treated independently</span></span>
+<span id="cb38-13">    <span class="at" style="color: #657422;">hyper=</span>pc_cor_ar1) </span></code></pre></div>
+</details>
+</div>
+<p><strong>Formula 4:</strong> Separate spatial effect for each timestep (related by ar1) and each location has its own autoregressive term.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb39" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1">Frm<span class="fl" style="color: #AD0000;">.4</span> <span class="ot" style="color: #003B4F;">=</span> Y <span class="sc" style="color: #5E5E5E;">~</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">+</span>     </span>
+<span id="cb39-2">  intercept1 <span class="sc" style="color: #5E5E5E;">+</span>       </span>
+<span id="cb39-3">  <span class="fu" style="color: #4758AB;">f</span>(Region<span class="fl" style="color: #AD0000;">.1</span>,        </span>
+<span id="cb39-4">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"bym2"</span>,   </span>
+<span id="cb39-5">    <span class="at" style="color: #657422;">graph=</span>J,         </span>
+<span id="cb39-6">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,     </span>
+<span id="cb39-7">    <span class="at" style="color: #657422;">group =</span> doy,     <span class="co" style="color: #5E5E5E;">#time index, daily (create separate realizations of spatial covariate for each day)</span></span>
+<span id="cb39-8">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>), <span class="co" style="color: #5E5E5E;">#groups are related via an order-1 autoregressive</span></span>
+<span id="cb39-9">    <span class="at" style="color: #657422;">hyper=</span>bym_hyper) <span class="sc" style="color: #5E5E5E;">+</span> <span class="co" style="color: #5E5E5E;">#prior for BYM</span></span>
+<span id="cb39-10">  <span class="fu" style="color: #4758AB;">f</span>(doy<span class="fl" style="color: #AD0000;">.1</span>,             </span>
+<span id="cb39-11">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>,       </span>
+<span id="cb39-12">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb39-13">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.1</span>,  </span>
+<span id="cb39-14">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>), </span>
+<span id="cb39-15">    <span class="at" style="color: #657422;">hyper=</span>pc_cor_ar1) </span></code></pre></div>
+</details>
+</div>
+<p><strong>Formula 5:</strong> As Formula 4 but with space-time interaction to capture location and time specific variation outside of modeled trends.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1">Frm<span class="fl" style="color: #AD0000;">.5</span> <span class="ot" style="color: #003B4F;">=</span> Y <span class="sc" style="color: #5E5E5E;">~</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">+</span>    </span>
+<span id="cb40-2">  intercept1 <span class="sc" style="color: #5E5E5E;">+</span>       </span>
+<span id="cb40-3">  <span class="fu" style="color: #4758AB;">f</span>(Region<span class="fl" style="color: #AD0000;">.1</span>,        </span>
+<span id="cb40-4">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"bym2"</span>,    </span>
+<span id="cb40-5">    <span class="at" style="color: #657422;">graph=</span>J,         </span>
+<span id="cb40-6">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,    </span>
+<span id="cb40-7">    <span class="at" style="color: #657422;">group =</span> doy,     </span>
+<span id="cb40-8">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>),</span>
+<span id="cb40-9">    <span class="at" style="color: #657422;">hyper=</span>bym_hyper) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb40-10">  <span class="fu" style="color: #4758AB;">f</span>(doy<span class="fl" style="color: #AD0000;">.1</span>,             </span>
+<span id="cb40-11">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>,       </span>
+<span id="cb40-12">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb40-13">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.1</span>,  </span>
+<span id="cb40-14">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>), </span>
+<span id="cb40-15">    <span class="at" style="color: #657422;">hyper=</span>pc_cor_ar1) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb40-16">  <span class="fu" style="color: #4758AB;">f</span>(Region_Wk,   <span class="co" style="color: #5E5E5E;">#Index for all location*time combinations (space-time interaction)</span></span>
+<span id="cb40-17">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>, <span class="co" style="color: #5E5E5E;">#each location and time combination considered independently</span></span>
+<span id="cb40-18">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb40-19">    <span class="at" style="color: #657422;">hyper=</span>pc_prec_iid) </span></code></pre></div>
+</details>
+</div>
+<p><strong>Formula 6:</strong> As Formula 5 but adding covariate for variation due to day of week (e.g.&nbsp;Monday, Tuesday,…Sunday).</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb41" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1">Frm<span class="fl" style="color: #AD0000;">.6</span> <span class="ot" style="color: #003B4F;">=</span> Y <span class="sc" style="color: #5E5E5E;">~</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">+</span>    </span>
+<span id="cb41-2">  intercept1 <span class="sc" style="color: #5E5E5E;">+</span>       </span>
+<span id="cb41-3">  <span class="fu" style="color: #4758AB;">f</span>(Region<span class="fl" style="color: #AD0000;">.1</span>,        </span>
+<span id="cb41-4">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"bym2"</span>,    </span>
+<span id="cb41-5">    <span class="at" style="color: #657422;">graph=</span>J,         </span>
+<span id="cb41-6">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,     </span>
+<span id="cb41-7">    <span class="at" style="color: #657422;">group =</span> doy,     </span>
+<span id="cb41-8">    <span class="at" style="color: #657422;">hyper=</span>bym_hyper, </span>
+<span id="cb41-9">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb41-10">  <span class="fu" style="color: #4758AB;">f</span>(doy<span class="fl" style="color: #AD0000;">.1</span>,             </span>
+<span id="cb41-11">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>,       </span>
+<span id="cb41-12">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb41-13">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.1</span>,  </span>
+<span id="cb41-14">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>), </span>
+<span id="cb41-15">    <span class="at" style="color: #657422;">hyper=</span>pc_cor_ar1) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb41-16">  <span class="fu" style="color: #4758AB;">f</span>(dow,           <span class="co" style="color: #5E5E5E;">#discrete variable indicating day of week, e.g. Monday, Tuesday,...Sunday</span></span>
+<span id="cb41-17">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb41-18">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>,   <span class="co" style="color: #5E5E5E;">#days of week may vary independently</span></span>
+<span id="cb41-19">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.2</span>, <span class="co" style="color: #5E5E5E;">#variation attributed to days of week may differ by location</span></span>
+<span id="cb41-20">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>), </span>
+<span id="cb41-21">    <span class="at" style="color: #657422;">hyper=</span>pc_prec_iid) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb41-22">  <span class="fu" style="color: #4758AB;">f</span>(Region_Wk,   </span>
+<span id="cb41-23">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>, </span>
+<span id="cb41-24">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb41-25">    <span class="at" style="color: #657422;">hyper=</span>pc_prec_iid) </span></code></pre></div>
+</details>
+</div>
+<p><strong>Formula 7:</strong> Including Rt estimates as an experimental covariate. Forecast Rt trend estimated from the observation period (training period) to the future (28 days) using an autoregressive model.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb42" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1">Frm<span class="fl" style="color: #AD0000;">.7</span> <span class="ot" style="color: #003B4F;">=</span> Y <span class="sc" style="color: #5E5E5E;">~</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">+</span>     </span>
+<span id="cb42-2">  intercept1 <span class="sc" style="color: #5E5E5E;">+</span>       </span>
+<span id="cb42-3">  pov_pct <span class="sc" style="color: #5E5E5E;">+</span> pop <span class="sc" style="color: #5E5E5E;">+</span>    </span>
+<span id="cb42-4">  <span class="fu" style="color: #4758AB;">f</span>(Region<span class="fl" style="color: #AD0000;">.1</span>,        </span>
+<span id="cb42-5">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"bym2"</span>,    </span>
+<span id="cb42-6">    <span class="at" style="color: #657422;">graph=</span>J,        </span>
+<span id="cb42-7">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,     </span>
+<span id="cb42-8">    <span class="at" style="color: #657422;">group =</span> doy,     </span>
+<span id="cb42-9">    <span class="at" style="color: #657422;">hyper=</span>bym_hyper, </span>
+<span id="cb42-10">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb42-11">  <span class="fu" style="color: #4758AB;">f</span>(doy<span class="fl" style="color: #AD0000;">.1</span>, Rt_raw,  <span class="co" style="color: #5E5E5E;">#order by time index (daily) but weight each timestep by corresponding Rt_raw estimate</span></span>
+<span id="cb42-12">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>,    <span class="co" style="color: #5E5E5E;">#apply order-1 autoregressive to Rt weighted time index above</span></span>
+<span id="cb42-13">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb42-14">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.2</span>, </span>
+<span id="cb42-15">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>),</span>
+<span id="cb42-16">    <span class="at" style="color: #657422;">hyper=</span>pc_cor_ar1) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb42-17">  <span class="fu" style="color: #4758AB;">f</span>(dow,           </span>
+<span id="cb42-18">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb42-19">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>,</span>
+<span id="cb42-20">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.3</span>,</span>
+<span id="cb42-21">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>),</span>
+<span id="cb42-22">    <span class="at" style="color: #657422;">hyper=</span>pc_prec_iid) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb42-23">  <span class="fu" style="color: #4758AB;">f</span>(Region_Wk,   </span>
+<span id="cb42-24">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>, </span>
+<span id="cb42-25">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb42-26">    <span class="at" style="color: #657422;">hyper=</span>pc_prec_iid) </span></code></pre></div>
+</details>
+</div>
+<p><strong>Formula 8:</strong> As with Formula 8 but adding a random walk at a more coarse time scale (3 day steps) to reduce forecast decay.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb43" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1">Frm<span class="fl" style="color: #AD0000;">.8</span> <span class="ot" style="color: #003B4F;">=</span> Y <span class="sc" style="color: #5E5E5E;">~</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">+</span>     </span>
+<span id="cb43-2">  intercept1 <span class="sc" style="color: #5E5E5E;">+</span>       </span>
+<span id="cb43-3">  pov_pct <span class="sc" style="color: #5E5E5E;">+</span> pop <span class="sc" style="color: #5E5E5E;">+</span>    <span class="co" style="color: #5E5E5E;">#linear covariates for poverty and population over 55yrs</span></span>
+<span id="cb43-4">  <span class="fu" style="color: #4758AB;">f</span>(Region<span class="fl" style="color: #AD0000;">.1</span>,        </span>
+<span id="cb43-5">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"bym2"</span>,    </span>
+<span id="cb43-6">    <span class="at" style="color: #657422;">graph=</span>J,        </span>
+<span id="cb43-7">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,     </span>
+<span id="cb43-8">    <span class="at" style="color: #657422;">group =</span> doy,    </span>
+<span id="cb43-9">    <span class="at" style="color: #657422;">hyper=</span>bym_hyper, </span>
+<span id="cb43-10">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb43-11">  <span class="fu" style="color: #4758AB;">f</span>(threeday_indx<span class="fl" style="color: #AD0000;">.1</span>, <span class="co" style="color: #5E5E5E;">#time index, 3days</span></span>
+<span id="cb43-12">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb43-13">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"rw2"</span>,     <span class="co" style="color: #5E5E5E;">#order-2 random walk with noise</span></span>
+<span id="cb43-14">    <span class="at" style="color: #657422;">scale.model =</span> <span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb43-15">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.2</span>,</span>
+<span id="cb43-16">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>), </span>
+<span id="cb43-17">    <span class="at" style="color: #657422;">hyper=</span>pc_rw2) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb43-18">  <span class="fu" style="color: #4758AB;">f</span>(doy<span class="fl" style="color: #AD0000;">.1</span>, Rt_raw,  </span>
+<span id="cb43-19">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"ar1"</span>,    </span>
+<span id="cb43-20">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb43-21">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.3</span>, </span>
+<span id="cb43-22">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>),</span>
+<span id="cb43-23">    <span class="at" style="color: #657422;">hyper=</span>pc_cor_ar1) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb43-24">  <span class="fu" style="color: #4758AB;">f</span>(dow,           </span>
+<span id="cb43-25">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb43-26">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>,</span>
+<span id="cb43-27">    <span class="at" style="color: #657422;">group =</span> Region<span class="fl" style="color: #AD0000;">.4</span>,</span>
+<span id="cb43-28">    <span class="at" style="color: #657422;">control.group=</span><span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>),</span>
+<span id="cb43-29">    <span class="at" style="color: #657422;">hyper=</span>pc_prec_iid) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb43-30">  <span class="fu" style="color: #4758AB;">f</span>(Region_Wk,   </span>
+<span id="cb43-31">    <span class="at" style="color: #657422;">model=</span><span class="st" style="color: #20794D;">"iid"</span>, </span>
+<span id="cb43-32">    <span class="at" style="color: #657422;">constr=</span><span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb43-33">    <span class="at" style="color: #657422;">hyper=</span>pc_prec_iid) </span></code></pre></div>
+</details>
+</div>
+<p><strong>Organize Formulas</strong></p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb44" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1">formulas.list <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">list</span>()</span>
+<span id="cb44-2">formulas.list[[<span class="st" style="color: #20794D;">"base_rw1"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> Frm<span class="fl" style="color: #AD0000;">.1</span></span>
+<span id="cb44-3">formulas.list[[<span class="st" style="color: #20794D;">"rw1_trend"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> Frm<span class="fl" style="color: #AD0000;">.2</span></span>
+<span id="cb44-4">formulas.list[[<span class="st" style="color: #20794D;">"base_car"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> Frm<span class="fl" style="color: #AD0000;">.3</span></span>
+<span id="cb44-5">formulas.list[[<span class="st" style="color: #20794D;">"car_time"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> Frm<span class="fl" style="color: #AD0000;">.4</span></span>
+<span id="cb44-6">formulas.list[[<span class="st" style="color: #20794D;">"car_sti"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> Frm<span class="fl" style="color: #AD0000;">.5</span></span>
+<span id="cb44-7">formulas.list[[<span class="st" style="color: #20794D;">"car_wdays"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> Frm<span class="fl" style="color: #AD0000;">.6</span></span>
+<span id="cb44-8">formulas.list[[<span class="st" style="color: #20794D;">"car_rt"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> Frm<span class="fl" style="color: #AD0000;">.7</span></span>
+<span id="cb44-9">formulas.list[[<span class="st" style="color: #20794D;">"car_full"</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> Frm<span class="fl" style="color: #AD0000;">.8</span></span></code></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="run-models" class="level1">
+<h1>Run Models</h1>
+<p>The <em>run_model_list()</em> function runs a series of models as specified in the <strong>formulas.list</strong> using the input data organized as a datastack (nrm.srk). The function runs each model sequentially and writes the executed models (models_out), formulas (formulas.list), priors (prior.list), datastack, and original dataframe (train_data) to an <strong>.RData</strong> in the analysis directory. The <strong>models_out</strong> object will also be available in the environment for further processing.</p>
+<p>There are many customization options for inference but have opted to keep <em>run_model_list()</em> fairly simple for ease of use and maximum efficiency.</p>
+<section id="addional-run_model_list-options" class="level4">
+<h4 class="anchored" data-anchor-id="addional-run_model_list-options">Addional <em>run_model_list()</em> options:</h4>
+<ul>
+<li><strong>likelihood</strong>
+<ul>
+<li>If one likelihood is provided it will be applied to all models<br>
+</li>
+<li>A vector of likelihoods can be provided with order based on <strong>formulas.list</strong><br>
+</li>
+<li>e.g., myFamilies &lt;- c(“gaussian”, “binomial”, “zeroinflatednbinomial”, …)</li>
+</ul></li>
+<li><strong>config</strong>
+<ul>
+<li>indicates if latencies (GMRF) should be retained for sampling<br>
+</li>
+<li><strong>config=TRUE</strong> can be time intensive and dramatically slow model runs</li>
+<li>CovidCAR has a <em>post_sampling()</em> function to facilitate sampling</li>
+</ul></li>
+<li><strong>verbose</strong> prints INLA algorithm process to screen during model runs<br>
+</li>
+<li><strong>archive</strong> indicates to save model inputs and results to the analysis directory
+<ul>
+<li>model outputs will be written to a <em>run_archive</em> subdirectory</li>
+</ul></li>
+</ul>
+</section>
+<section id="run-all-models" class="level2">
+<h2 class="anchored" data-anchor-id="run-all-models">Run All Models</h2>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb45" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1">formulas.list <span class="ot" style="color: #003B4F;">=</span> formulas.list[<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">4</span>)] <span class="co" style="color: #5E5E5E;">#short list for demo, fast run models</span></span>
+<span id="cb45-2"></span>
+<span id="cb45-3">models_out <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">run_model_list</span>(<span class="at" style="color: #657422;">formulas.list=</span>formulas.list,</span>
+<span id="cb45-4">                            <span class="at" style="color: #657422;">dataStack=</span>nrm.stk,</span>
+<span id="cb45-5">                            <span class="at" style="color: #657422;">likelihood =</span> <span class="st" style="color: #20794D;">"gaussian"</span>,</span>
+<span id="cb45-6">                            <span class="at" style="color: #657422;">config=</span><span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">verbose =</span> <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">archive=</span><span class="cn" style="color: #8f5902;">TRUE</span>)</span></code></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="extract-and-format-forecasts" class="level1">
+<h1>Extract and Format Forecasts</h1>
+<p>The <em>extract_forecasts()</em> function pulls forecasts from models and saves them to a <em>forecasts</em> folder in analysis directory. The function returns a <em>forecast_paths</em> list object to the environment with file path names.</p>
+<p>Forecasts are formatted to the specifications required for submission to the <a href="https://github.com/reichlab/covid19-forecast-hub">covid19-forecast-hub</a>.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb46" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><span class="co" style="color: #5E5E5E;">#models_out[["full_mod"]] &lt;- full_model</span></span>
+<span id="cb46-2"><span class="fu" style="color: #4758AB;">extract_forecasts</span>(<span class="at" style="color: #657422;">mod_out=</span>models_out,</span>
+<span id="cb46-3">                  <span class="at" style="color: #657422;">dataStack=</span>nrm.stk, <span class="at" style="color: #657422;">train_data=</span>train_data,</span>
+<span id="cb46-4">                  <span class="at" style="color: #657422;">team =</span> <span class="st" style="color: #20794D;">"CFA"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>ℹ Writing model forecasts to analysis directory: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ base_rw1 [871ms]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ℹ Writing model forecasts to analysis directory: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ rw1_trend [964ms]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ℹ Writing model forecasts to analysis directory: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ base_car [900ms]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ℹ Writing model forecasts to analysis directory: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ car_time [855ms]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb59" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><span class="co" style="color: #5E5E5E;">#check returned object</span></span>
+<span id="cb59-2"><span class="fu" style="color: #4758AB;">names</span>(forecast_paths)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "base_rw1"  "rw1_trend" "base_car"  "car_time" </code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb61" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><span class="fu" style="color: #4758AB;">head</span>(<span class="fu" style="color: #4758AB;">read.csv</span>(forecast_paths[[<span class="st" style="color: #20794D;">"rw1_trend"</span>]])) <span class="co" style="color: #5E5E5E;">#formatted for submission</span></span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 10%">
+<col style="width: 24%">
+<col style="width: 18%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">forecast_date</th>
+<th style="text-align: left;">location</th>
+<th style="text-align: left;">target</th>
+<th style="text-align: left;">target_end_date</th>
+<th style="text-align: left;">type</th>
+<th style="text-align: right;">quantile</th>
+<th style="text-align: right;">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">0 day ahead inc hosp</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">18.04364</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">1 day ahead inc hosp</td>
+<td style="text-align: left;">2021-08-24</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.00000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">2 day ahead inc hosp</td>
+<td style="text-align: left;">2021-08-25</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">0.00000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">3 day ahead inc hosp</td>
+<td style="text-align: left;">2021-08-26</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">15.77363</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">4 day ahead inc hosp</td>
+<td style="text-align: left;">2021-08-27</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">48.06863</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">5 day ahead inc hosp</td>
+<td style="text-align: left;">2021-08-28</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">83.54071</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>View forecasts</strong> <em>extract_forecasts()</em> also returns a list (‘plot_paths’) of paths to plotting data from the extraction process. This data can be accessed from the <em>plot_location()</em> function, which provides a quick diagnostic plot of forecast for a specific location.</p>
+<p>Note of Caution: If the ‘loc=’ option is left as NULL, all locations will be plotted to PDF file and saved in the ‘Reports’ folder of the analysis directory. This may be time consuming!</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb62" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1">OK_plot <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">plot_location</span>(<span class="at" style="color: #657422;">plot_path =</span> plot_paths, <span class="at" style="color: #657422;">model =</span> <span class="st" style="color: #20794D;">"base_car"</span>, <span class="at" style="color: #657422;">loc =</span> <span class="st" style="color: #20794D;">"Oklahoma"</span>)</span>
+<span id="cb62-2">OK_plot</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/projects/ccintro/ccintro_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb63" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1">AR_plot <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">plot_location</span>(<span class="at" style="color: #657422;">plot_path =</span> plot_paths, <span class="at" style="color: #657422;">model =</span> <span class="st" style="color: #20794D;">"base_car"</span>, <span class="at" style="color: #657422;">loc =</span> <span class="st" style="color: #20794D;">"Arkansas"</span>)</span>
+<span id="cb63-2">AR_plot</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/projects/ccintro/ccintro_files/figure-html/unnamed-chunk-32-2.png" class="img-fluid" width="672"></p>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb64" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><span class="co" style="color: #5E5E5E;">#plot_location(plot_path = plot_paths, model = "full_mod") #plots and saves all locations to a pdf file</span></span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="model-scoring" class="level1">
+<h1>Model Scoring</h1>
+<section id="wis-scores" class="level2">
+<h2 class="anchored" data-anchor-id="wis-scores">WIS Scores</h2>
+<p>The <em>score_WIS()</em> function calculates the WIS score for forecasts by model. Optional arguments can be included to indicate if files should be read from a directory (ingest = “path”), a dataframe in the environment (ingest = “dataframe”),or from a list object with individual file paths (ingest = “list”) as returned by <em>extract_forecasts()</em>.</p>
+<p>The ‘missing’ option can be used to specify how missing observation data should be handled; ‘remove’ from data or fill with ‘zero’.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb65" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1">my_truth <span class="ot" style="color: #003B4F;">&lt;-</span> train_data <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="co" style="color: #5E5E5E;">#Caution: my_truth may be different than your truth :)</span></span>
+<span id="cb65-2">  <span class="fu" style="color: #4758AB;">select</span>(date, location, value)</span>
+<span id="cb65-3"></span>
+<span id="cb65-4">my_scores <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">score_WIS</span>(<span class="at" style="color: #657422;">forecast_data =</span> forecast_paths, <span class="at" style="color: #657422;">truth=</span>my_truth, </span>
+<span id="cb65-5">                       <span class="at" style="color: #657422;">ingest =</span> <span class="st" style="color: #20794D;">"list"</span>, <span class="at" style="color: #657422;">missing =</span> <span class="st" style="color: #20794D;">"remove"</span>) </span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ A total of 2668 predictions weren't evalauted due lack of truth data</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb67" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><span class="fu" style="color: #4758AB;">head</span>(my_scores)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: left;">location_name</th>
+<th style="text-align: left;">forecast_date</th>
+<th style="text-align: right;">WIS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">01</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: right;">0.5471048</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">02</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: right;">0.5186350</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">04</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: right;">0.5279331</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">05</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: right;">0.5578004</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">06</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: right;">0.5507474</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">08</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: right;">0.5235968</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb68" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><span class="co" style="color: #5E5E5E;">#overall</span></span>
+<span id="cb68-2">wis_rank <span class="ot" style="color: #003B4F;">&lt;-</span> my_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb68-3">  <span class="fu" style="color: #4758AB;">group_by</span>(model) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb68-4">  <span class="fu" style="color: #4758AB;">summarise</span>(<span class="at" style="color: #657422;">mean_wis =</span> <span class="fu" style="color: #4758AB;">mean</span>(WIS)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb68-5">  <span class="fu" style="color: #4758AB;">arrange</span>(mean_wis) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb68-6">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">wisRank =</span> <span class="fu" style="color: #4758AB;">row_number</span>())</span>
+<span id="cb68-7"></span>
+<span id="cb68-8">wis_rank <span class="co" style="color: #5E5E5E;">#mean absolute values</span></span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">mean_wis</th>
+<th style="text-align: right;">wisRank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: right;">34.41192</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">car_time</td>
+<td style="text-align: right;">34.46840</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">base_rw1</td>
+<td style="text-align: right;">280.88099</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rw1_trend</td>
+<td style="text-align: right;">307.12383</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>Diagnostic score plots</strong><br>
+The <em>plot_WIS_lines()</em> function has options to make quick plots of WIS scores returned by <em>score_WIS()</em>.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb69" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><span class="fu" style="color: #4758AB;">unique</span>(my_scores<span class="sc" style="color: #5E5E5E;">$</span>model)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "base_car"  "base_rw1"  "car_time"  "rw1_trend"</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb71" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><span class="co" style="color: #5E5E5E;">#lines showing absolute WIS</span></span>
+<span id="cb71-2"><span class="fu" style="color: #4758AB;">plot_WIS_lines</span>(my_scores, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"date"</span>, <span class="at" style="color: #657422;">range =</span> <span class="st" style="color: #20794D;">"abs"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/projects/ccintro/ccintro_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb72" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><span class="co" style="color: #5E5E5E;">#lines showing scaled WIS</span></span>
+<span id="cb72-2"><span class="fu" style="color: #4758AB;">plot_WIS_lines</span>(my_scores, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"date"</span>, <span class="at" style="color: #657422;">range =</span> <span class="st" style="color: #20794D;">"scaled"</span>, </span>
+<span id="cb72-3">               <span class="at" style="color: #657422;">scale_model =</span> <span class="st" style="color: #20794D;">"base_rw1"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/projects/ccintro/ccintro_files/figure-html/unnamed-chunk-34-2.png" class="img-fluid" width="672"></p>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb73" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><span class="co" style="color: #5E5E5E;">#optional 'limit' that recodes: (WIS &gt;= limit) -&gt; limit</span></span>
+<span id="cb73-2"><span class="fu" style="color: #4758AB;">plot_WIS_lines</span>(my_scores, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"date"</span>, <span class="at" style="color: #657422;">range =</span> <span class="st" style="color: #20794D;">"scaled"</span>, </span>
+<span id="cb73-3">               <span class="at" style="color: #657422;">scale_model =</span> <span class="st" style="color: #20794D;">"base_rw1"</span>, <span class="at" style="color: #657422;">limit =</span> <span class="dv" style="color: #AD0000;">2</span>)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/projects/ccintro/ccintro_files/figure-html/unnamed-chunk-34-3.png" class="img-fluid" width="672"></p>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb74" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><span class="co" style="color: #5E5E5E;">#tile option</span></span>
+<span id="cb74-2"><span class="fu" style="color: #4758AB;">plot_WIS_lines</span>(my_scores, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"tile"</span>, <span class="at" style="color: #657422;">range =</span> <span class="st" style="color: #20794D;">"scaled"</span>, </span>
+<span id="cb74-3">               <span class="at" style="color: #657422;">scale_model =</span> <span class="st" style="color: #20794D;">"base_rw1"</span>, <span class="at" style="color: #657422;">limit =</span> <span class="dv" style="color: #AD0000;">2</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 432 rows containing missing values (`geom_tile()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/projects/ccintro/ccintro_files/figure-html/unnamed-chunk-34-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="mean-absolute-error-mae" class="level2">
+<h2 class="anchored" data-anchor-id="mean-absolute-error-mae">Mean Absolute Error (MAE)</h2>
+<p>The <em>score_MAE()</em> function works comparably to <em>score_WIS()</em> but is a simpler measure of model performance as it is based on only the point estimates from forecasts.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb76" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1">my_mae <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">score_MAE</span>(<span class="at" style="color: #657422;">forecast_data =</span> forecast_paths, <span class="at" style="color: #657422;">truth=</span>my_truth, <span class="at" style="color: #657422;">ingest =</span> <span class="st" style="color: #20794D;">"list"</span>, <span class="at" style="color: #657422;">missing =</span> <span class="st" style="color: #20794D;">"remove"</span>) </span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ A total of 116 forecasts weren't evaluatd due lack of truth data</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb78" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1">my_mae</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">MAPE</th>
+<th style="text-align: right;">maeRank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: right;">41.2</td>
+<td style="text-align: right;">0.01243</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">car_time</td>
+<td style="text-align: right;">42.0</td>
+<td style="text-align: right;">0.01266</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">base_rw1</td>
+<td style="text-align: right;">325.6</td>
+<td style="text-align: right;">0.09818</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rw1_trend</td>
+<td style="text-align: right;">353.3</td>
+<td style="text-align: right;">0.10652</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="ensemble" class="level1">
+<h1>Ensemble</h1>
+<p>The <em>propose_weights()</em> function assists with ensemble building by weighting models using a given performance metric. The function scales the raw model comparison metric and then builds the ensemble by multiplying each forecasts by its model-specific weight and summing across all included models. The resulting ensemble forecast is then standardized for Covid19-hub submission and written to the analysis directory (./forecasts). The function returns the estimated weights to the environment.</p>
+<p>For example, the WIS and MAE scores could be used to weight individual models in an ensemble.</p>
+<p>First, compare WIS and MAE scores:</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb79" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1">mod_rank <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">left_join</span>(my_mae, wis_rank, <span class="at" style="color: #657422;">by=</span><span class="st" style="color: #20794D;">"model"</span>) <span class="co" style="color: #5E5E5E;">#combine with overall WIS</span></span>
+<span id="cb79-2"></span>
+<span id="cb79-3">mod_rank <span class="co" style="color: #5E5E5E;">#note the scores rank models differently  </span></span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">MAPE</th>
+<th style="text-align: right;">maeRank</th>
+<th style="text-align: right;">mean_wis</th>
+<th style="text-align: right;">wisRank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: right;">41.2</td>
+<td style="text-align: right;">0.01243</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">34.41192</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">car_time</td>
+<td style="text-align: right;">42.0</td>
+<td style="text-align: right;">0.01266</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">34.46840</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">base_rw1</td>
+<td style="text-align: right;">325.6</td>
+<td style="text-align: right;">0.09818</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">280.88099</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rw1_trend</td>
+<td style="text-align: right;">353.3</td>
+<td style="text-align: right;">0.10652</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">307.12383</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The <em>propose_weights()</em> function can the be applied to generate weights and write the resulting ensemble.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb80" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1">my_wis_weights <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">propose_weights</span>(<span class="at" style="color: #657422;">forecast_data =</span> forecast_paths, <span class="co" style="color: #5E5E5E;">#standardized model forecasts</span></span>
+<span id="cb80-2">                             <span class="at" style="color: #657422;">ingest =</span> <span class="st" style="color: #20794D;">"list"</span>,                     <span class="co" style="color: #5E5E5E;">#read model locations as list</span></span>
+<span id="cb80-3">                             <span class="at" style="color: #657422;">rank_df =</span> mod_rank,                  <span class="co" style="color: #5E5E5E;">#use the data from WIS and MAE scoring         </span></span>
+<span id="cb80-4">                             <span class="at" style="color: #657422;">rankCol =</span> <span class="st" style="color: #20794D;">"mean_wis"</span>,                <span class="co" style="color: #5E5E5E;">#weight models based on this column</span></span>
+<span id="cb80-5">                             <span class="at" style="color: #657422;">team =</span> <span class="st" style="color: #20794D;">"CFA"</span>,                        <span class="co" style="color: #5E5E5E;">#team name (need be in file name per Covid19hub)</span></span>
+<span id="cb80-6">                             <span class="at" style="color: #657422;">mod_name =</span> <span class="st" style="color: #20794D;">"wis_ensemble"</span>)           <span class="co" style="color: #5E5E5E;">#label for the new ensemble forecast</span></span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ Writing ensemble 'wis_ensemble' to analysis directory</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb82" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1">my_wis_weights <span class="co" style="color: #5E5E5E;">#The weights column reports the actual weights calculated for each model</span></span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">MAPE</th>
+<th style="text-align: right;">maeRank</th>
+<th style="text-align: right;">mean_wis</th>
+<th style="text-align: right;">wisRank</th>
+<th style="text-align: right;">mean_wis_weights</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: right;">41.2</td>
+<td style="text-align: right;">0.01243</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">34.41192</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.3158712</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">car_time</td>
+<td style="text-align: right;">42.0</td>
+<td style="text-align: right;">0.01266</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">34.46840</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.3158425</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">base_rw1</td>
+<td style="text-align: right;">325.6</td>
+<td style="text-align: right;">0.09818</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">280.88099</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.1908016</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rw1_trend</td>
+<td style="text-align: right;">353.3</td>
+<td style="text-align: right;">0.10652</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">307.12383</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.1774848</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb83" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><span class="co" style="color: #5E5E5E;">#another example,this time using MAE and including a 'drop' option</span></span>
+<span id="cb83-2">my_mae_weights <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">propose_weights</span>(<span class="at" style="color: #657422;">forecast_data =</span> forecast_paths, </span>
+<span id="cb83-3">                             <span class="at" style="color: #657422;">ingest =</span> <span class="st" style="color: #20794D;">"list"</span>,</span>
+<span id="cb83-4">                             <span class="at" style="color: #657422;">rank_df =</span> mod_rank, </span>
+<span id="cb83-5">                             <span class="at" style="color: #657422;">rankCol =</span> <span class="st" style="color: #20794D;">"MAE"</span>,</span>
+<span id="cb83-6">                             <span class="at" style="color: #657422;">drop =</span> <span class="dv" style="color: #AD0000;">1</span>,  <span class="co" style="color: #5E5E5E;">#number of lowest ranked models to drop/exclude from ensemble</span></span>
+<span id="cb83-7">                             <span class="at" style="color: #657422;">team =</span> <span class="st" style="color: #20794D;">"CFA"</span>,</span>
+<span id="cb83-8">                             <span class="at" style="color: #657422;">mod_name =</span> <span class="st" style="color: #20794D;">"mae_ensemble"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ Dropped models: rw1_trend</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ Writing ensemble 'mae_ensemble' to analysis directory</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb86" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1">my_mae_weights</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">MAPE</th>
+<th style="text-align: right;">maeRank</th>
+<th style="text-align: right;">mean_wis</th>
+<th style="text-align: right;">wisRank</th>
+<th style="text-align: right;">MAE_weights</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: right;">41.2</td>
+<td style="text-align: right;">0.01243</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">34.41192</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.4496086</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">car_time</td>
+<td style="text-align: right;">42.0</td>
+<td style="text-align: right;">0.01266</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">34.46840</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.4486301</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">base_rw1</td>
+<td style="text-align: right;">325.6</td>
+<td style="text-align: right;">0.09818</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">280.88099</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.1017613</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb87" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><span class="co" style="color: #5E5E5E;">#yet another example, not providing a rankCol -&gt; function assumes equal weighting </span></span>
+<span id="cb87-2">equal_mae_weights <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">propose_weights</span>(<span class="at" style="color: #657422;">forecast_data =</span> forecast_paths, </span>
+<span id="cb87-3">                             <span class="at" style="color: #657422;">ingest =</span> <span class="st" style="color: #20794D;">"list"</span>,</span>
+<span id="cb87-4">                             <span class="at" style="color: #657422;">rank_df =</span> mod_rank, </span>
+<span id="cb87-5">                             <span class="co" style="color: #5E5E5E;">#rankCol = NULL,</span></span>
+<span id="cb87-6">                             <span class="at" style="color: #657422;">drop =</span> <span class="dv" style="color: #AD0000;">1</span>,  <span class="co" style="color: #5E5E5E;">#issues warning, dropping models without a ranking criteria</span></span>
+<span id="cb87-7">                             <span class="at" style="color: #657422;">team =</span> <span class="st" style="color: #20794D;">"CFA"</span>,</span>
+<span id="cb87-8">                             <span class="at" style="color: #657422;">mod_name =</span> <span class="st" style="color: #20794D;">"equal_mae_ensemble"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>✖ No rankCol but dropping models? Models will be dropped from end of list!</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>! No rankCol provided, ensemble assumes equal weighting</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ Dropped models: rw1_trend</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ Writing ensemble 'equal_mae_ensemble' to analysis directory</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb92" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1">equal_mae_weights</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">MAPE</th>
+<th style="text-align: right;">maeRank</th>
+<th style="text-align: right;">mean_wis</th>
+<th style="text-align: right;">wisRank</th>
+<th style="text-align: right;">rankCol</th>
+<th style="text-align: right;">rankCol_weights</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: right;">41.2</td>
+<td style="text-align: right;">0.01243</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">34.41192</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.3333333</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">car_time</td>
+<td style="text-align: right;">42.0</td>
+<td style="text-align: right;">0.01266</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">34.46840</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.3333333</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">base_rw1</td>
+<td style="text-align: right;">325.6</td>
+<td style="text-align: right;">0.09818</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">280.88099</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.3333333</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<section id="ensemble-re-scoring" class="level2">
+<h2 class="anchored" data-anchor-id="ensemble-re-scoring">Ensemble Re-scoring</h2>
+<p>Now that new ensembles have been added to the ‘forecasts’ directory, comparison scores can be recalculated.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb93" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1">myDir <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">file.path</span>(su_yaml<span class="sc" style="color: #5E5E5E;">$</span>out_dir_name, <span class="st" style="color: #20794D;">"forecasts"</span>)</span>
+<span id="cb93-2">new_mae <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">score_MAE</span>(<span class="at" style="color: #657422;">forecast_data =</span> myDir, <span class="at" style="color: #657422;">truth=</span>my_truth, <span class="at" style="color: #657422;">ingest =</span> <span class="st" style="color: #20794D;">"path"</span>, <span class="at" style="color: #657422;">missing =</span> <span class="st" style="color: #20794D;">"remove"</span>) </span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ A total of 203 forecasts weren't evaluatd due lack of truth data</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb95" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1">new_mae</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">MAE</th>
+<th style="text-align: right;">MAPE</th>
+<th style="text-align: right;">maeRank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">base_car</td>
+<td style="text-align: right;">41.2</td>
+<td style="text-align: right;">0.01243</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">car_time</td>
+<td style="text-align: right;">42.0</td>
+<td style="text-align: right;">0.01266</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mae_ensemble</td>
+<td style="text-align: right;">50.8</td>
+<td style="text-align: right;">0.01532</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">equal_mae_ensemble</td>
+<td style="text-align: right;">105.5</td>
+<td style="text-align: right;">0.03180</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wis_ensemble</td>
+<td style="text-align: right;">120.6</td>
+<td style="text-align: right;">0.03638</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">base_rw1</td>
+<td style="text-align: right;">325.6</td>
+<td style="text-align: right;">0.09818</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rw1_trend</td>
+<td style="text-align: right;">353.3</td>
+<td style="text-align: right;">0.10652</td>
+<td style="text-align: right;">7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="historic-forecasts" class="level2">
+<h2 class="anchored" data-anchor-id="historic-forecasts">Historic Forecasts</h2>
+<p>The <em>get_hub_forecasts()</em> function retrieves forecasts previously submitted to the <a href="https://github.com/reichlab/covid19-forecast-hub">covid19-forecast-hub</a>.</p>
+<p>Similar to <em>get_covid19_obs()</em>, there are options to load from a local parquet cache (source=“cache”) as indexed with the <a href="https://github.com/cdcent/covid19Forecasts"><strong>Covid19Forecasts</strong> package</a>(private repo) or to load “test” data included with the package. There is also the an option to use the <a href="https://github.com/reichlab/covidHubUtils"><strong>covidHubUtils</strong> package</a> to download data directly from covid19-forecast-hub.</p>
+<p>The queried results can also be filtered to specific models using the ‘models=’ option. If not set, the ‘model=’ options defaults to forecasts from the COVIDhub-trained_ensemble, COVIDhub-ensemble, and COVIDhub-baseline models.</p>
+<p>By default, <em>get_hub_forecasts()</em> returns forecasts for the forecast period specified during initial setup using <em>setup_analysis()</em>.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb96" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1">hist_forecasts <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">get_hub_forecasts</span>(<span class="at" style="color: #657422;">source =</span> <span class="st" style="color: #20794D;">"covidHubUtils"</span>,</span>
+<span id="cb96-2">                                    <span class="at" style="color: #657422;">models =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"COVIDhub-trained_ensemble"</span>, <span class="st" style="color: #20794D;">"COVIDhub-baseline"</span>, <span class="st" style="color: #20794D;">"COVIDhub-ensemble"</span>),</span>
+<span id="cb96-3">                                    <span class="at" style="color: #657422;">write_copy =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ Loading location crosswalk</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 57 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: "|"
+chr (4): STATE, STUSAB, STATE_NAME, STATENS
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+→ Fetching COVID-19 forecasts using covidHubUtils
+
+get_token(): POST: https://zoltardata.com/api-token-auth/
+
+get_resource(): GET: https://zoltardata.com/api/projects/
+
+get_resource(): GET: https://zoltardata.com/api/project/44/models/
+
+get_resource(): GET: https://zoltardata.com/api/project/44/timezeros/
+
+→ Writing forecast data to analysis directory</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb99" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><span class="fu" style="color: #4758AB;">dim</span>(hist_forecasts)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 103032      7</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb101" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><span class="fu" style="color: #4758AB;">head</span>(hist_forecasts)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 15%">
+<col style="width: 10%">
+<col style="width: 17%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: left;">forecast_date</th>
+<th style="text-align: left;">location</th>
+<th style="text-align: left;">target_end_date</th>
+<th style="text-align: left;">type</th>
+<th style="text-align: right;">quantile</th>
+<th style="text-align: right;">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">COVIDhub-trained_ensemble</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">01</td>
+<td style="text-align: left;">2021-08-24</td>
+<td style="text-align: left;">point</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">495</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">COVIDhub-trained_ensemble</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">01</td>
+<td style="text-align: left;">2021-08-24</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.010</td>
+<td style="text-align: right;">369</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">COVIDhub-trained_ensemble</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">01</td>
+<td style="text-align: left;">2021-08-24</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.025</td>
+<td style="text-align: right;">384</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">COVIDhub-trained_ensemble</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">01</td>
+<td style="text-align: left;">2021-08-24</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.050</td>
+<td style="text-align: right;">395</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">COVIDhub-trained_ensemble</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">01</td>
+<td style="text-align: left;">2021-08-24</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.100</td>
+<td style="text-align: right;">404</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">COVIDhub-trained_ensemble</td>
+<td style="text-align: left;">2021-08-23</td>
+<td style="text-align: left;">01</td>
+<td style="text-align: left;">2021-08-24</td>
+<td style="text-align: left;">quantile</td>
+<td style="text-align: right;">0.150</td>
+<td style="text-align: right;">412</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb102" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><span class="co" style="color: #5E5E5E;">#because data is formatted to same standard, functions can read</span></span>
+<span id="cb102-2">hub_rank <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">score_WIS</span>(<span class="at" style="color: #657422;">forecast_data =</span> hist_forecasts, <span class="at" style="color: #657422;">truth=</span>my_truth, </span>
+<span id="cb102-3">                      <span class="at" style="color: #657422;">ingest =</span> <span class="st" style="color: #20794D;">"dataframe"</span>, <span class="at" style="color: #657422;">missing =</span> <span class="st" style="color: #20794D;">"remove"</span>)</span>
+<span id="cb102-4"></span>
+<span id="cb102-5">hub_rank <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb102-6">  <span class="fu" style="color: #4758AB;">group_by</span>(model) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb102-7">  <span class="fu" style="color: #4758AB;">summarise</span>(<span class="at" style="color: #657422;">mean_wis =</span> <span class="fu" style="color: #4758AB;">mean</span>(WIS))</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">mean_wis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">COVIDhub-baseline</td>
+<td style="text-align: right;">45.61759</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">COVIDhub-ensemble</td>
+<td style="text-align: right;">50.61499</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">COVIDhub-trained_ensemble</td>
+<td style="text-align: right;">68.17765</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>Combine with CovidCAR models</strong><br>
+The <em>plot_forecasts_compare()</em> function combines <em>plot_WIS_lines()</em> and <em>score_WIS()</em> to make a model WIS comparison line plot. The ‘hub_forecasts’ option facilitates direct use of imported historical forecast data from the Covid19-forecast-hub.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb103" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1">my_plot <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">plot_forecasts_compare</span>(<span class="at" style="color: #657422;">forecast_data =</span> myDir, <span class="at" style="color: #657422;">truth=</span>my_truth, <span class="at" style="color: #657422;">ingest =</span> <span class="st" style="color: #20794D;">"path"</span>,</span>
+<span id="cb103-2">                                  <span class="at" style="color: #657422;">hub_forecasts =</span> hist_forecasts,</span>
+<span id="cb103-3">                                  <span class="at" style="color: #657422;">scale_model =</span> <span class="st" style="color: #20794D;">"COVIDhub-baseline"</span>,</span>
+<span id="cb103-4">                                  <span class="at" style="color: #657422;">limit =</span> <span class="dv" style="color: #AD0000;">4</span>,</span>
+<span id="cb103-5">                                  <span class="at" style="color: #657422;">missing =</span> <span class="st" style="color: #20794D;">"remove"</span>,</span>
+<span id="cb103-6">                                  <span class="at" style="color: #657422;">write_copy =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ A total of 4669 predictions weren't evalauted due lack of truth data</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ Writing comparison scores to analysis directory</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb106" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><span class="fu" style="color: #4758AB;">class</span>(my_plot)</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "gg"     "ggplot"</code></pre>
+</div>
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb108" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1">my_plot</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://jmhumphreys.github.io/projects/ccintro/ccintro_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{2023,
+  author = {},
+  title = {CovidCAR {Package} {Overview}},
+  date = {2023-05-18},
+  url = {https://jmhumphreys.github.io//projects/ccintro/ccintro.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-2023" class="csl-entry quarto-appendix-citeas">
+<span>“CovidCAR Package Overview.”</span> 2023. May 18, 2023. <a href="https://jmhumphreys.github.io//projects/ccintro/ccintro.html">https://jmhumphreys.github.io//projects/ccintro/ccintro.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>statistical inference</category>
+  <guid>https://jmhumphreys.github.io/projects/ccintro/ccintro.html</guid>
+  <pubDate>Thu, 18 May 2023 06:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Attempt to create a Project Page</title>
   <link>https://jmhumphreys.github.io/projects/attempt1/index.html</link>

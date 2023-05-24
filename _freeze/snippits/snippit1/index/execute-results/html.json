@@ -1,8 +1,10 @@
 {
-  "hash": "f8e90d854d64566db28fe7a723f53556",
+  "hash": "4f11783af3f572fffc85fb1799ac3947",
   "result": {
-    "markdown": "---\ntitle: \"snippit 1\"\ndescription: Just a placeholder as I'm figuring things out\ndate: 2023-03-19\ncategories: [stan, jags]\nformat:\n  html:\n    code-fold: show\n    code-summary: \"Hide code\"\n    code-overflow: wrap\n    toc-title: Page Contents\n    toc: true\n    toc-depth: 2\n    number-sections: false\n    html-math-method: katex\n    css: styles.css\n    theme: flatly\n    toc-location: left\n    smooth-scroll: true\neditor_options: \n  chunk_output_type: console\n---\n\n\n# Intro\n\nLong story short.\n\n# Step one\n\nHere's my explanation.\n\n## Code chunk\n\n::: {.cell}\n\n```{.r .cell-code}\n76*25*0.04\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 76\n```\n:::\n:::\n\n\n\n# Step two\n\nHere's my explanation of the next step.\n\n## Code chunk again\n\n::: {.cell}\n\n```{.r .cell-code}\npi*7\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 21.99115\n```\n:::\n:::\n",
-    "supporting": [],
+    "markdown": "---\ntitle: \"snippit 1\"\ndescription: Just a placeholder as I'm figuring things out\ndate: 2023-03-19\ncategories: [stan, jags]\nformat:\n  html:\n    code-fold: show\n    code-summary: \"Hide code\"\n    code-overflow: wrap\n    toc-title: Page Contents\n    toc: true\n    toc-depth: 2\n    number-sections: false\n    html-math-method: katex\n    css: styles.css\n    theme: flatly\n    toc-location: left\n    smooth-scroll: true\neditor_options: \n  chunk_output_type: console\n---\n\n\n\n# Intro\n\nLong story short.\n\n# Step one\n\nHere's my explanation.\n\n## Code chunk\n\n::: {.cell}\n\n```{.r .cell-code}\n76*25*0.04\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 76\n```\n:::\n:::\n\n\n\n\n\n# Step two\n\nHere's my explanation of the next step.\n\n## Code chunk again\n\n::: {.cell}\n\n```{.r .cell-code}\npi*7\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 21.99115\n```\n:::\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],
